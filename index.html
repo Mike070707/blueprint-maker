@@ -1333,9 +1333,9 @@ function addTriMesh(tris,m,tile,scaleUV){
   const me=new THREE.Mesh(geo,m); me.castShadow=true; me.receiveShadow=true; return me;
 }
 const quad=(a,b,c,d)=>[[a,b,c],[a,c,d]];
-function roof3D(grp,L,x1,y1,x2,y2,y0,type,hiSide){
+function roof3D(grp,L,x1,y1,x2,y2,y0,type,hiSide,lower){
   const oh=L.overhang, sl=L.pitch/12, X1=x1-oh,X2=x2+oh,Y1=y1-oh,Y2=y2+oh,W=X2-X1,D=Y2-Y1, rt=roofTex(L.roofMat,L.roofColor), rm=new THREE.MeshStandardMaterial({map:rt,roughness:.8,side:THREE.DoubleSide}), ex=C3ext;
-  if(type==="flat"){ bx(grp,x2-x1+1,.7,y2-y1+1,(x1+x2)/2,y0,(y1+y2)/2,mc(hexn(L.roofColor),{roughness:.9})); const pc=mc(hexn(L.trim),{roughness:.7}), pw=.5,ph=1.4; bx(grp,x2-x1+1,ph,pw,(x1+x2)/2,y0+.7,y1-.5+pw/2,pc); bx(grp,x2-x1+1,ph,pw,(x1+x2)/2,y0+.7,y2+.5-pw/2,pc); bx(grp,pw,ph,y2-y1,x1-.5+pw/2,y0+.7,(y1+y2)/2,pc); bx(grp,pw,ph,y2-y1,x2+.5-pw/2,y0+.7,(y1+y2)/2,pc); return; }
+  if(type==="flat"){ bx(grp,x2-x1+1,.7,y2-y1+1,(x1+x2)/2,y0,(y1+y2)/2,mc(hexn(L.roofColor),{roughness:.9})); if(lower) return; const pc=mc(hexn(L.trim),{roughness:.7}), pw=.5,ph=1.4; bx(grp,x2-x1+1,ph,pw,(x1+x2)/2,y0+.7,y1-.5+pw/2,pc); bx(grp,x2-x1+1,ph,pw,(x1+x2)/2,y0+.7,y2+.5-pw/2,pc); bx(grp,pw,ph,y2-y1,x1-.5+pw/2,y0+.7,(y1+y2)/2,pc); bx(grp,pw,ph,y2-y1,x2+.5-pw/2,y0+.7,(y1+y2)/2,pc); return; }
   const tris=[], gab=[];
   if(type==="shed"){ const h=((hiSide==="n"||hiSide==="s")?(y2-y1):(x2-x1))*Math.min(sl,.34), P=(x,z,hh)=>[x,y0+hh,z];
     if(hiSide==="n") tris.push(...quad(P(x1-.3,y2+oh*.6,0),P(x2+.3,y2+oh*.6,0),P(x2+.3,y1,h),P(x1-.3,y1,h)));
@@ -1459,6 +1459,7 @@ function build3D(){
   C3ext=C.ext; const exView=view3===0;
   let z0=0, minx=1e9,maxx=-1e9,miny=1e9,maxy=-1e9, topH=0; const fls=[];
   for(let fi=0; fi<=doc.cur; fi++){
+    if(fi>0&&!doc.floors[fi].walls.length) break;
     const f=doc.floors[fi], H0=f.wallH||9, H=(view3===2||view3===4)?Math.min(H0,4):H0, fg=new THREE.Group(); fg.position.y=z0; grp.add(fg);
     const bb=wallsBox(f); fls.push({f,bb,z0,H0});
     if(bb){ minx=Math.min(minx,bb.x1);maxx=Math.max(maxx,bb.x2);miny=Math.min(miny,bb.y1);maxy=Math.max(maxy,bb.y2);
@@ -1480,9 +1481,7 @@ function build3D(){
   if(exView){
     for(let i=0;i<fls.length;i++){ const a=fls[i]; if(!a.bb)continue; const up=fls[i+1]&&fls[i+1].bb, y0=a.z0+a.H0, b=a.bb;
       if(!up){ if(L.roof!=="none") roof3D(grp,L,b.x1,b.y1,b.x2,b.y2,y0,L.roof); }
-      else if(L.roof!=="none"){ const u=up, t1=Math.max(b.y1,Math.min(b.y2,u.y1)), t2=Math.min(b.y2,Math.max(b.y1,u.y2)), l1=Math.max(b.x1,Math.min(b.x2,u.x1)), r1=Math.min(b.x2,Math.max(b.x1,u.x2));
-        if(t1-b.y1>2) roof3D(grp,L,b.x1,b.y1,b.x2,t1,y0,"shed","s"); if(b.y2-t2>2) roof3D(grp,L,b.x1,t2,b.x2,b.y2,y0,"shed","n");
-        if(l1-b.x1>2) roof3D(grp,L,b.x1,t1,l1,t2,y0,"shed","e"); if(b.x2-r1>2) roof3D(grp,L,r1,t1,b.x2,t2,y0,"shed","w"); } }
+      else if(L.roof!=="none"){ roof3D(grp,Object.assign({},L,{pitch:Math.min(L.pitch,4),overhang:Math.max(1,L.overhang)}),b.x1,b.y1,b.x2,b.y2,y0,L.roof==="flat"?"flat":"hip",null,true); } }
   }
   if(!isFinite(minx)){minx=0;maxx=40;miny=0;maxy=30;}
   const cx=(minx+maxx)/2,cz=(miny+maxy)/2,size=Math.max(maxx-minx,maxy-miny,20), gs=size*24;
