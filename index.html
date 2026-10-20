@@ -10,7 +10,6 @@
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#1f5eff">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%231f5eff'/%3E%3Cpath d='M14 14h36v36H14zM14 32h22M36 14v18M36 42v8' fill='none' stroke='white' stroke-width='4'/%3E%3C/svg%3E">
-
 <style>
   :root { --ui-bg:#f4f5f7; --ui-fg:#14171c; --ui-muted:#667085; --ui-line:#d8dce3; --ui-card:#fff; --ui-accent:#1f5eff;
           --paper:#ffffff; --grid:#eef1f5; --grid-major:#d9dfe8; --ink:#1a1d22; --dim:#1f5eff; --sel:#ff6a00; }
@@ -111,6 +110,7 @@
     <button id="ortho" aria-pressed="true" data-i="ortho">Straight</button>
     <button id="dims" aria-pressed="true" data-i="dims_walls">Sizes: walls</button>
     <button id="grid" aria-pressed="true" data-i="grid">Grid</button>
+    <button id="stylebtn" data-i="st_print">Style: Print</button>
     <button id="paperbtn" aria-pressed="false" data-i="paperv">Paper</button>
     <button id="bpmode" aria-pressed="false" data-i="bp">Blueprint</button>
   </div>
@@ -214,7 +214,7 @@ const T = {
   h_room:"Drag a rectangle, or click corners for any shape (click the first corner or press Enter to close).",
   h_text:"Click to add text.",h_erase:"Click anything to delete it.",h_pan:"Drag to move the view. Scroll to zoom. Hold Space in any tool to pan.",
   h_place:"Click to place. R rotates. Esc stops.",
-  pj_back:"Projects",p_outdoor:"Set to 0 for an outdoor area (patio, yard).",front3:"Front view",v3_ext:"View: Exterior",v3_open:"View: Open top",v3_cut:"View: Cutaway",v3_floor:"View: Floors only",p_custom:"Custom size (inches, width × height)",p_fitsheet:"Fit paper to plan",p_cw:"Width (in)",p_ch:"Height (in)",
+  pj_back:"Projects",st_print:"Style: Print",st_color:"Style: Color",p_outdoor:"Set to 0 for an outdoor area (patio, yard).",front3:"Front view",v3_ext:"View: Exterior",v3_open:"View: Open top",v3_cut:"View: Cutaway",v3_floor:"View: Floors only",p_custom:"Custom size (inches, width × height)",p_fitsheet:"Fit paper to plan",p_cw:"Width (in)",p_ch:"Height (in)",
   lk_title:"House look",lk_modern:"Modern",lk_farm:"Farmhouse",lk_brick:"Brick",lk_med:"Mediterranean",lk_cabin:"Cabin",lk_stone:"Stone",lk_wall:"Wall material",lk_wcolor:"Wall color",lk_trim:"Trim color",lk_roof:"Roof shape",lk_rmat:"Roof material",lk_rcolor:"Roof color",lk_pitch:"Roof pitch",lk_over:"Roof overhang",lk_door:"Front door color",lk_garage:"Garage door color",lk_frame:"Window frame color",lk_lawn:"Lawn and driveway",
   wm_stucco:"Stucco",wm_brick:"Brick",wm_siding:"Siding",wm_stone:"Stone",wm_wood:"Wood",rf_gable:"Gable",rf_hip:"Hip",rf_flat:"Flat",rf_none:"No roof",rm_shingle:"Shingles",rm_tile:"Clay tile",rm_metal:"Metal",paperv:"Paper",dims_off:"Sizes: off",dims_walls:"Sizes: walls",dims_chain:"Sizes: full",p_dstyle:"Door style",ds_door:"Single door",ds_double:"Double door",ds_slide:"Sliding door",ds_garage:"Garage door",ds_open:"Open archway",
   ty_door:"Door",ty_double:"Double door",ty_slide:"Sliding door",ty_garage:"Garage door",ty_open:"Archway",ty_window:"Window",g_stairs:"Stairs",g_outdoor:"Pool & outdoor",
@@ -246,7 +246,7 @@ const T = {
   h_room:"גרור מלבן, או לחץ על פינות לצורה חופשית (לחץ על הפינה הראשונה או Enter לסגירה).",
   h_text:"לחץ להוספת טקסט.",h_erase:"לחץ על כל דבר כדי למחוק.",h_pan:"גרור להזזת התצוגה. גלול לזום. Space מפעיל הזזה בכל כלי.",
   h_place:"לחץ למיקום. R מסובב. Esc מפסיק.",
-  pj_back:"פרויקטים",p_outdoor:"הגדר 0 לשטח חיצוני (פטיו, חצר).",front3:"מבט קדמי",v3_ext:"תצוגה: חוץ",v3_open:"תצוגה: גג פתוח",v3_cut:"תצוגה: חתך",v3_floor:"תצוגה: רצפות בלבד",p_custom:"גודל מותאם (אינצ'ים, רוחב × גובה)",p_fitsheet:"התאם נייר לתוכנית",p_cw:"רוחב (אינץ')",p_ch:"גובה (אינץ')",
+  pj_back:"פרויקטים",st_print:"סגנון: הדפס",st_color:"סגנון: צבע",p_outdoor:"הגדר 0 לשטח חיצוני (פטיו, חצר).",front3:"מבט קדמי",v3_ext:"תצוגה: חוץ",v3_open:"תצוגה: גג פתוח",v3_cut:"תצוגה: חתך",v3_floor:"תצוגה: רצפות בלבד",p_custom:"גודל מותאם (אינצ'ים, רוחב × גובה)",p_fitsheet:"התאם נייר לתוכנית",p_cw:"רוחב (אינץ')",p_ch:"גובה (אינץ')",
   lk_title:"מראה הבית",lk_modern:"מודרני",lk_farm:"בית חווה",lk_brick:"לבנים",lk_med:"ים תיכוני",lk_cabin:"בקתה",lk_stone:"אבן",lk_wall:"חומר קירות",lk_wcolor:"צבע קירות",lk_trim:"צבע קישוטים",lk_roof:"צורת גג",lk_rmat:"חומר גג",lk_rcolor:"צבע גג",lk_pitch:"שיפוע גג",lk_over:"בליטת גג",lk_door:"צבע דלת כניסה",lk_garage:"צבע דלת חניה",lk_frame:"צבע מסגרת חלונות",lk_lawn:"דשא ושביל גישה",
   wm_stucco:"טיח",wm_brick:"לבנים",wm_siding:"חיפוי",wm_stone:"אבן",wm_wood:"עץ",rf_gable:"גמלון",rf_hip:"ארבע מקצועות",rf_flat:"שטוח",rf_none:"ללא גג",rm_shingle:"רעפי אספלט",rm_tile:"רעפי חרס",rm_metal:"מתכת",paperv:"נייר",dims_off:"מידות: כבוי",dims_walls:"מידות: קירות",dims_chain:"מידות: מלא",p_dstyle:"סוג דלת",ds_door:"דלת רגילה",ds_double:"דלת כפולה",ds_slide:"דלת הזזה",ds_garage:"דלת חניה",ds_open:"פתח פתוח",
   ty_door:"דלת",ty_double:"דלת כפולה",ty_slide:"דלת הזזה",ty_garage:"דלת חניה",ty_open:"קשת",ty_window:"חלון",g_stairs:"מדרגות",g_outdoor:"בריכה ופנים חוץ",
@@ -462,6 +462,7 @@ const cv=document.getElementById("c"), ctx=cv.getContext("2d"), tb=document.getE
 const $=id=>document.getElementById(id);
 let undoS=[],redoS=[], view={ox:60,oy:60,s:14}, tool="select", placeK=null, ghostRot=0;
 let sel=null, ortho=true, showDims=false, showGrid=true, bp=false, snapV=0.5, dimMode=1, paperView=false, doorStyle="door";
+let planStyle=(()=>{try{return localStorage.getItem("bpm-style")||"print";}catch{return "print";}})();
 let drag=null, hover=null, spaceDown=false, shiftDown=false, polyPts=[], editing=null, lastFill="#cfe3e1";
 const SW=["#cfe3e1","#e8e1d0","#dcdfe2","#f0d9d9","#dbe6f5","#e6f0d4","#f5e6c8","#ffffff"];
 
@@ -526,7 +527,7 @@ function contentBounds(f){
 function render(c,W,H,v,P,inter,ro){
   ro=ro||{}; const K=ro.lw||1;
   const f=F(), S=v.s, X=x=>v.ox+x*S, Y=y=>v.oy+y*S;
-  const bpLook = P===BPP, fi = bpLook?"#ffffff":"#2b3a3a", ff = bpLook?"rgba(255,255,255,.08)":"#ffffff", rt = bpLook?"#ffffff":"#1b2b2b";
+  const bpLook = P===BPP, pr = !bpLook&&planStyle==="print", fi = bpLook?"#ffffff":pr?"#3f4349":"#2b3a3a", ff = bpLook?"rgba(255,255,255,.08)":pr?"rgba(255,255,255,.9)":"#ffffff", rt = bpLook?"#ffffff":pr?"#111111":"#1b2b2b", FONT = pr?'"Arial Narrow","Helvetica Neue",Arial,sans-serif':"sans-serif";
   const SG=(inter&&ro.sheet&&doc.sheet)?sheetGeom(v):null;
   if(!ro.noBg){
     if(SG){ c.fillStyle=P.desk||"#9aa2ad"; c.fillRect(0,0,W,H); c.save(); c.shadowColor="rgba(0,0,0,.38)"; c.shadowBlur=24; c.shadowOffsetY=6; c.fillStyle=P.paper; c.fillRect(SG.sx,SG.sy,SG.sw,SG.sh); c.restore(); if(!bpLook){ c.fillStyle=paperPattern(c); c.fillRect(SG.sx,SG.sy,SG.sw,SG.sh); } }
@@ -546,14 +547,15 @@ function render(c,W,H,v,P,inter,ro){
   // rooms
   for(const r of f.rooms){
     c.beginPath(); r.pts.forEach((p,i)=>i?c.lineTo(X(p[0]),Y(p[1])):c.moveTo(X(p[0]),Y(p[1]))); c.closePath();
-    c.globalAlpha=bpLook?.35:1; c.fillStyle=r.fill; c.fill(); c.globalAlpha=1;
-    if(r.floor&&r.floor!=="none"&&S>=5) floorPattern(c,r,v,bpLook);
+    if(!pr){ c.globalAlpha=bpLook?.35:1; c.fillStyle=r.fill; c.fill(); c.globalAlpha=1;
+      if(r.floor&&r.floor!=="none"&&S>=5) floorPattern(c,r,v,bpLook); }
     if(inter&&sel&&sel.item===r){c.strokeStyle=P.sel;c.lineWidth=2;c.setLineDash([6,4]);c.stroke();c.setLineDash([]);
       for(const p of r.pts){c.fillStyle=P.sel;c.fillRect(X(p[0])-4,Y(p[1])-4,8,8);} }
   }
   // walls
   c.lineCap="square"; c.lineJoin="miter";
   for(const w of f.walls){ c.strokeStyle=(inter&&sel&&sel.item===w)?P.sel:P.ink; c.lineWidth=Math.max(2,(w.th||.5)*S); c.beginPath();c.moveTo(X(w.x1),Y(w.y1));c.lineTo(X(w.x2),Y(w.y2));c.stroke(); }
+  if(pr){ const lw2=Math.max(1.3,1.6*K); c.strokeStyle=P.paper; for(const w of f.walls){ const wp=Math.max(2,(w.th||.5)*S)-2*lw2; if(wp<1.5)continue; c.lineWidth=wp; c.beginPath();c.moveTo(X(w.x1),Y(w.y1));c.lineTo(X(w.x2),Y(w.y2));c.stroke(); } }
   c.lineCap="butt";
   if(inter&&sel&&sel.kind==="walls"){ for(const [x,y] of [[sel.item.x1,sel.item.y1],[sel.item.x2,sel.item.y2]]){c.fillStyle=P.sel;c.fillRect(X(x)-4,Y(y)-4,8,8);} }
   // openings
@@ -583,8 +585,8 @@ function render(c,W,H,v,P,inter,ro){
   for(const r of f.rooms){
     const b=bbox(r.pts), cx=X((b.x1+b.x2)/2), cy=Y((b.y1+b.y2)/2), n=ro.nameFont||Math.max(8,.95*S), sm=ro.nameFont?ro.nameFont*.78:Math.max(6,.62*S);
     if(!ro.nameFont&&.95*S<6) continue;
-    const lines=[]; if(r.name) lines.push([r.name,`700 ${n}px sans-serif`,n*1.25]);
-    if(r.showDims){ lines.push([fmt(b.x2-b.x1)+" x "+fmt(b.y2-b.y1),`${sm}px sans-serif`,sm*1.3]); if(r.ceil) lines.push([fmt(r.ceil)+" "+t("chg"),`${sm*.9}px sans-serif`,sm*1.2]); }
+    const lines=[]; if(r.name) lines.push([pr?r.name.toUpperCase():r.name,`700 ${n}px ${FONT}`,n*1.25]);
+    if(r.showDims){ lines.push([fmt(b.x2-b.x1)+" x "+fmt(b.y2-b.y1),`${sm}px ${FONT}`,sm*1.3]); if(r.ceil) lines.push([fmt(r.ceil)+" "+t("chg"),`${sm*.9}px ${FONT}`,sm*1.2]); }
     let tot=lines.reduce((s,l)=>s+l[2],0), y=cy-tot/2;
     c.fillStyle=rt; for(const [txt,font,h] of lines){ c.font=font; c.fillText(txt,cx,y+h/2); y+=h; }
   }
@@ -1013,6 +1015,7 @@ $("snap").onchange=e=>{snapV=parseFloat(e.target.value);};
 $("undo").onclick=undo;$("redo").onclick=redo;$("fit").onclick=()=>{ if(mode==="3d"){reset3D();return;} autoFit=true;fit(); };
 $("ortho").onclick=e=>{ortho=!ortho;e.currentTarget.setAttribute("aria-pressed",ortho);};
 $("dims").onclick=e=>{ dimMode=(dimMode+1)%3; const k=["dims_off","dims_walls","dims_chain"][dimMode]; e.currentTarget.dataset.i=k; e.currentTarget.textContent=t(k); e.currentTarget.setAttribute("aria-pressed",dimMode>0); draw(); };
+$("stylebtn").onclick=e=>{ planStyle=planStyle==="print"?"color":"print"; try{localStorage.setItem("bpm-style",planStyle);}catch{} const k=planStyle==="print"?"st_print":"st_color"; e.currentTarget.dataset.i=k; e.currentTarget.textContent=t(k); draw(); };
 $("paperbtn").onclick=e=>{ paperView=!paperView; e.currentTarget.setAttribute("aria-pressed",paperView); autoFit=true; fit(); };
 $("dstyle").onchange=e=>{ doorStyle=e.target.value; setTool("door"); };
 $("grid").onclick=e=>{showGrid=!showGrid;e.currentTarget.setAttribute("aria-pressed",showGrid);draw();};
@@ -1620,7 +1623,7 @@ loadIndex();
 try{ const old=localStorage.getItem("blueprint-maker-2"); if(old&&!index.length){ const d=JSON.parse(old); if(d.floors&&d.floors.length){ const id=addProject(d,(d.meta&&d.meta.project)||"My House"); store.set("bpm-current",id); } localStorage.removeItem("blueprint-maker-2"); } }catch{}
 if(!index.length){ const id=createProject("My House","sample"); store.set("bpm-current",id); }
 { const last=store.get("bpm-current"); let id=index.some(p=>p.id===last)?last:index[0].id; doc=loadDoc(id); if(!doc){ id=createProject("My House","sample"); doc=loadDoc(id); } curId=id; }
-syncUnits(); buildTools(); floorsBar(); buttons(); $("projname").value=doc.meta.project;
+syncUnits(); buildTools(); floorsBar(); buttons(); $("projname").value=doc.meta.project; { const sb=$("stylebtn"), k=planStyle==="print"?"st_print":"st_color"; sb.dataset.i=k; sb.textContent=t(k); }
 new ResizeObserver(resize).observe(cv);
 resize(); fit(); setTool("select");
 showHome();
