@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Blueprint Maker - Free Floor Plan Designer</title>
-<meta name="description" content="Free online floor plan maker. Draw house plans with rooms, doors, windows and furniture, view them in 3D, manage multiple projects, and print to scale.">
+<meta name="description" content="Free online floor plan maker. Draw house plans on a paper-style sheet with rooms, stairs, pools, doors, windows and furniture, see every dimension, view in 3D, manage multiple projects, and print to scale.">
 <meta property="og:title" content="Blueprint Maker - Free Floor Plan Designer">
 <meta property="og:description" content="Draw house plans, view them in 3D and print to scale. Keep as many projects as you want.">
 <meta property="og:type" content="website">
@@ -109,8 +109,9 @@
   <div class="grp">
     <span data-i="snap">Snap</span><select id="snap"></select>
     <button id="ortho" aria-pressed="true" data-i="ortho">Straight</button>
-    <button id="dims" aria-pressed="false" data-i="dims">Wall sizes</button>
+    <button id="dims" aria-pressed="true" data-i="dims_walls">Sizes: walls</button>
     <button id="grid" aria-pressed="true" data-i="grid">Grid</button>
+    <button id="paperbtn" aria-pressed="true" data-i="paperv">Paper</button>
     <button id="bpmode" aria-pressed="false" data-i="bp">Blueprint</button>
   </div>
   <div class="sep"></div>
@@ -130,6 +131,8 @@
   <aside id="left">
     <h3 data-i="h_tools">Draw</h3>
     <div class="tools" id="tools"></div>
+    <label class="row" style="margin-top:10px"><span data-i="p_dstyle">Door style</span><select id="dstyle">
+      <option value="door" data-i="ds_door">Single door</option><option value="double" data-i="ds_double">Double door</option><option value="slide" data-i="ds_slide">Sliding door</option><option value="garage" data-i="ds_garage">Garage door</option><option value="open" data-i="ds_open">Open archway</option></select></label>
     <div id="libwrap"></div>
   </aside>
   <div id="stage">
@@ -209,7 +212,11 @@ const T = {
   h_room:"Drag a rectangle, or click corners for any shape (click the first corner or press Enter to close).",
   h_text:"Click to add text.",h_erase:"Click anything to delete it.",h_pan:"Drag to move the view. Scroll to zoom. Hold Space in any tool to pan.",
   h_place:"Click to place. R rotates. Esc stops.",
-  pj_back:"Projects",pj_title:"Your projects",pj_sub:"Every project is its own house plan. Create as many as you want.",pj_blank:"Blank plan",pj_sample:"Sample house",pj_create:"Create project",pj_import:"Import file",pj_resume:"Back to editor",pj_open:"Open",pj_dup:"Duplicate",pj_ren:"Rename",pj_del:"Delete",pj_delc:"Click again to delete",pj_exp:"Export",pj_save:"Save name",pj_edited:"Edited",pj_floors:"floor(s)",pj_rooms:"room(s)",pj_empty:"No projects yet. Create your first one above.",pj_def:"Project",pj_open_now:"Open now",
+  pj_back:"Projects",paperv:"Paper",dims_off:"Sizes: off",dims_walls:"Sizes: walls",dims_chain:"Sizes: full",p_dstyle:"Door style",ds_door:"Single door",ds_double:"Double door",ds_slide:"Sliding door",ds_garage:"Garage door",ds_open:"Open archway",
+  ty_door:"Door",ty_double:"Double door",ty_slide:"Sliding door",ty_garage:"Garage door",ty_open:"Archway",ty_window:"Window",g_stairs:"Stairs",g_outdoor:"Pool & outdoor",
+  s_stairs:"Straight stairs",s_stairsL:"L-shaped stairs",s_stairsU:"U-shaped stairs",s_spiral:"Spiral stairs",s_pool:"Pool",s_poolk:"Kidney pool",s_poolr:"Round pool",s_hottub:"Hot tub",s_tree:"Tree",s_bush:"Bush",s_bbq:"Grill",s_lounger:"Lounger",s_patio:"Patio set",
+  s_car:"Sedan",s_suv:"SUV",s_truck:"Pickup",s_loveseat:"Loveseat",s_bookcase:"Bookcase",s_piano:"Piano",s_round:"Round table",s_dchair:"Chair",s_crib:"Crib",s_plant:"Plant",s_rug:"Rug",s_ksink:"Kitchen sink",
+  p_sheet:"Sheet",p_paper:"Paper size",p_center:"Center on plan",p_floortype:"Floor finish",fl_none:"None",fl_wood:"Wood",fl_tile:"Tile",fl_stone:"Stone",fl_carpet:"Carpet",fl_concrete:"Concrete",fl_grass:"Grass",fl_water:"Water",pj_title:"Your projects",pj_sub:"Every project is its own house plan. Create as many as you want.",pj_blank:"Blank plan",pj_sample:"Sample house",pj_create:"Create project",pj_import:"Import file",pj_resume:"Back to editor",pj_open:"Open",pj_dup:"Duplicate",pj_ren:"Rename",pj_del:"Delete",pj_delc:"Click again to delete",pj_exp:"Export",pj_save:"Save name",pj_edited:"Edited",pj_floors:"floor(s)",pj_rooms:"room(s)",pj_empty:"No projects yet. Create your first one above.",pj_def:"Project",pj_open_now:"Open now",
   autoroom:"Auto room",dim:"Dimension",h_autoroom:"Click inside a closed set of walls to fill it as a room.",h_dim:"Drag to measure. Adds a dimension line.",p_dimension:"Dimension",p_off:"Offset",p_flip:"Flip side",
   noroom:"That area is not closed. Close the walls first.",p_wallh:"Wall height",p_project:"Project",p_pname:"Project name",p_addr:"Address",p_author:"Drawn by",
   walls3_full:"Walls: full",walls3_cut:"Walls: cutaway",walls3_off:"Walls: hidden",top3:"Top view",iso3:"Reset view",shot3:"Save image",h_3d:"3D: drag to orbit. Right-drag or Shift-drag to pan. Scroll to zoom. Use the floor tabs to show more or fewer floors.",
@@ -235,7 +242,11 @@ const T = {
   h_room:"גרור מלבן, או לחץ על פינות לצורה חופשית (לחץ על הפינה הראשונה או Enter לסגירה).",
   h_text:"לחץ להוספת טקסט.",h_erase:"לחץ על כל דבר כדי למחוק.",h_pan:"גרור להזזת התצוגה. גלול לזום. Space מפעיל הזזה בכל כלי.",
   h_place:"לחץ למיקום. R מסובב. Esc מפסיק.",
-  pj_back:"פרויקטים",pj_title:"הפרויקטים שלך",pj_sub:"כל פרויקט הוא תוכנית בית נפרדת. אפשר ליצור כמה שרוצים.",pj_blank:"תוכנית ריקה",pj_sample:"בית לדוגמה",pj_create:"צור פרויקט",pj_import:"ייבא קובץ",pj_resume:"חזרה לעורך",pj_open:"פתח",pj_dup:"שכפל",pj_ren:"שנה שם",pj_del:"מחק",pj_delc:"לחץ שוב למחיקה",pj_exp:"ייצוא",pj_save:"שמור שם",pj_edited:"עודכן",pj_floors:"קומות",pj_rooms:"חדרים",pj_empty:"אין עדיין פרויקטים. צור את הראשון למעלה.",pj_def:"פרויקט",pj_open_now:"פתח עכשיו",
+  pj_back:"פרויקטים",paperv:"נייר",dims_off:"מידות: כבוי",dims_walls:"מידות: קירות",dims_chain:"מידות: מלא",p_dstyle:"סוג דלת",ds_door:"דלת רגילה",ds_double:"דלת כפולה",ds_slide:"דלת הזזה",ds_garage:"דלת חניה",ds_open:"פתח פתוח",
+  ty_door:"דלת",ty_double:"דלת כפולה",ty_slide:"דלת הזזה",ty_garage:"דלת חניה",ty_open:"קשת",ty_window:"חלון",g_stairs:"מדרגות",g_outdoor:"בריכה ופנים חוץ",
+  s_stairs:"מדרגות ישרות",s_stairsL:"מדרגות בצורת L",s_stairsU:"מדרגות בצורת U",s_spiral:"מדרגות לולייניות",s_pool:"בריכה",s_poolk:"בריכה אורגנית",s_poolr:"בריכה עגולה",s_hottub:"ג'קוזי",s_tree:"עץ",s_bush:"שיח",s_bbq:"גריל",s_lounger:"מיטת שיזוף",s_patio:"סט חצר",
+  s_car:"סדאן",s_suv:"ג'יפ",s_truck:"טנדר",s_loveseat:"ספה דו-מושבית",s_bookcase:"ספרייה",s_piano:"פסנתר",s_round:"שולחן עגול",s_dchair:"כיסא",s_crib:"עריסה",s_plant:"צמח",s_rug:"שטיח",s_ksink:"כיור מטבח",
+  p_sheet:"דף",p_paper:"גודל נייר",p_center:"מרכז סביב התוכנית",p_floortype:"גימור רצפה",fl_none:"ללא",fl_wood:"פרקט",fl_tile:"אריחים",fl_stone:"אבן",fl_carpet:"שטיח קיר לקיר",fl_concrete:"בטון",fl_grass:"דשא",fl_water:"מים",pj_title:"הפרויקטים שלך",pj_sub:"כל פרויקט הוא תוכנית בית נפרדת. אפשר ליצור כמה שרוצים.",pj_blank:"תוכנית ריקה",pj_sample:"בית לדוגמה",pj_create:"צור פרויקט",pj_import:"ייבא קובץ",pj_resume:"חזרה לעורך",pj_open:"פתח",pj_dup:"שכפל",pj_ren:"שנה שם",pj_del:"מחק",pj_delc:"לחץ שוב למחיקה",pj_exp:"ייצוא",pj_save:"שמור שם",pj_edited:"עודכן",pj_floors:"קומות",pj_rooms:"חדרים",pj_empty:"אין עדיין פרויקטים. צור את הראשון למעלה.",pj_def:"פרויקט",pj_open_now:"פתח עכשיו",
   autoroom:"חדר אוטומטי",dim:"מידה",h_autoroom:"לחץ בתוך קירות סגורים כדי למלא חדר.",h_dim:"גרור למדידה. מוסיף קו מידה.",p_dimension:"מידה",p_off:"היסט",p_flip:"הפוך צד",
   noroom:"האזור לא סגור. סגור את הקירות.",p_wallh:"גובה קירות",p_project:"פרויקט",p_pname:"שם הפרויקט",p_addr:"כתובת",p_author:"שרטט",
   walls3_full:"קירות: מלאים",walls3_cut:"קירות: חתך",walls3_off:"קירות: מוסתרים",top3:"מבט מלמעלה",iso3:"אפס תצוגה",shot3:"שמור תמונה",h_3d:"תלת-ממד: גרור לסיבוב. גרירה בכפתור ימני או Shift להזזה. גלול לזום. לשוניות הקומות מציגות יותר או פחות קומות.",
@@ -272,6 +283,8 @@ const lenField = ft => fmt(ft);
 let nid=1;
 const uid = () => ++nid;
 const blankFloor = name => ({id:uid(),name,showTitle:true,wallH:9,walls:[],openings:[],labels:[],rooms:[],items:[],dims:[]});
+const DEFW={door:3,double:5,slide:6,garage:16,open:4,window:4}, OTYPES=["door","double","slide","garage","open","window"];
+const FLOORS=["none","wood","tile","stone","carpet","concrete","grass","water"], FLOORFILL={wood:"#ead9bd",tile:"#dde8ea",stone:"#d9d5cd",carpet:"#e7ddd0",concrete:"#d8dadc",grass:"#cfe3b5",water:"#bfe1f2"};
 const clone = o => JSON.parse(JSON.stringify(o));
 
 function segDist(px,py,x1,y1,x2,y2){
@@ -287,28 +300,38 @@ function inPoly(x,y,p){ let c=false; for(let i=0,j=p.length-1;i<p.length;j=i++){
 const totalArea = f => f.rooms.reduce((s,r)=>s+polyArea(r.pts),0);
 
 function sample(){
-  const fl=blankFloor("Main floor");
-  const W=(x1,y1,x2,y2)=>{const w={id:uid(),x1,y1,x2,y2,th:0.5}; fl.walls.push(w); return w;};
-  const e=[W(0,0,38,0),W(38,0,38,50),W(38,50,0,50),W(0,50,0,0)];
-  const wm=W(28,0,28,50), wg=W(0,28,20,28); W(20,28,20,50); const wa=W(28,15,38,15); W(28,26,38,26); W(28,34,38,34);
-  const O=(w,x,y,type,wd,sw=0)=>fl.openings.push({id:uid(),wall:w.id,t:segDist(x,y,w.x1,w.y1,w.x2,w.y2).t,type,w:wd,sw});
-  O(e[2],24,50,"door",3,0); O(fl.walls[5],20,38,"door",3,1);
-  O(wm,28,8,"door",3,1); O(wa,36.5,15,"door",2.5,0); O(wm,28,30,"door",2.7,1); O(wm,28,42,"door",3,1);
-  O(e[0],7,0,"window",5); O(e[0],21,0,"window",6); O(e[0],33,0,"window",5);
-  O(e[3],0,19,"window",4); O(e[1],38,44,"window",5); O(e[1],38,20,"window",3);
+  const fl=blankFloor("Main floor"), up=blankFloor("Upper floor");
+  const W=(f,x1,y1,x2,y2)=>{const w={id:uid(),x1,y1,x2,y2,th:.5};f.walls.push(w);return w;};
+  const O=(f,w,x,y,type,wd,sw)=>f.openings.push({id:uid(),wall:w.id,t:segDist(x,y,w.x1,w.y1,w.x2,w.y2).t,type,w:wd,sw:sw||0});
   const RR=(a,b,c,d)=>[[a+.25,b+.25],[c-.25,b+.25],[c-.25,d-.25],[a+.25,d-.25]];
-  const R=(box,name,ceil,fill,raw)=>fl.rooms.push({id:uid(),pts:raw?[[box[0],box[1]],[box[2],box[1]],[box[2],box[3]],[box[0],box[3]]]:RR(...box),name,ceil,fill:fill||"#cfe3e1",showDims:true});
-  R([.25,.25,14,10],"DINING",9,0,1); R([.25,10,14,27.75],"KITCHEN",9,0,1); R([14,.25,27.75,27.75],"LIVING",11,0,1);
-  R([28,0,38,15],"MASTER",9); R([28,15,38,26],"ENSUITE",9); R([28,26,38,34],"LAUNDRY",9);
-  R([28,34,38,50],"DEN",9); R([0,28,20,50],"GARAGE",9,"#dcdfe2"); R([20.25,27.75,27.75,49.75],"FOYER",11,0,1);
-  const I=(k,x,y,rot=0)=>{const s=SYM[k]; fl.items.push({id:uid(),k,x,y,w:s.w,d:s.d,rot});};
-  I("table",7,4.6); I("island",7,18); I("counter",1.25,22); I("range",1.4,13.5,90); I("fridge",12.4,26.7,0);
-  I("sofa",24.5,12,90); I("coffee",19.5,12,90); I("chair",18,5,180);
-  I("king",33,4.2); I("night",29.7,1.4); I("night",36.3,1.4);
-  I("vanity2",33,16.15); I("toilet",36.4,24.6,180); I("tub",29.7,23,90); I("shower",35.7,19.3);
-  I("washer",29.6,31); I("washer",32.3,31); I("desk",33.5,38);
-  I("car",5.7,39); I("car",14.2,39);
-  return {unit:"imp",cur:0,meta:{project:"My House",address:"",author:""},floors:[fl, blankFloor("Upper floor")]};
+  const R=(f,box,name,ceil,fill,floor,raw)=>f.rooms.push({id:uid(),pts:raw?[[box[0],box[1]],[box[2],box[1]],[box[2],box[3]],[box[0],box[3]]]:RR(...box),name,ceil,fill:fill||FLOORFILL[floor]||"#cfe3e1",floor:floor||"none",showDims:true});
+  const I=(f,k,x,y,rot,o)=>{const sy=SYM[k];f.items.push(Object.assign({id:uid(),k,x,y,w:sy.w,d:sy.d,rot:rot||0},o||{}));};
+  // ----- main floor -----
+  const e=[W(fl,0,0,38,0),W(fl,38,0,38,50),W(fl,38,50,0,50),W(fl,0,50,0,0)];
+  const wm=W(fl,28,0,28,50), wg=W(fl,0,28,20,28), wg2=W(fl,20,28,20,50), wa=W(fl,28,15,38,15); W(fl,28,26,38,26); W(fl,28,34,38,34);
+  O(fl,e[2],24,50,"double",5); O(fl,e[2],10,50,"garage",16); O(fl,wg2,20,38,"door",3,1);
+  O(fl,wm,28,8,"door",3,1); O(fl,wa,36.5,15,"door",2.5,0); O(fl,wm,28,30,"door",2.7,1); O(fl,wm,28,42,"door",3,1);
+  O(fl,e[0],7,0,"window",5); O(fl,e[0],21,0,"window",6); O(fl,e[0],33,0,"window",5);
+  O(fl,e[3],0,19,"window",4); O(fl,e[1],38,44,"window",5); O(fl,e[1],38,20,"window",3); O(fl,e[1],38,6,"slide",6);
+  R(fl,[.25,.25,14,10],"DINING",9,0,"wood",1); R(fl,[.25,10,14,27.75],"KITCHEN",9,0,"tile",1); R(fl,[14,.25,27.75,27.75],"LIVING",11,0,"wood",1);
+  R(fl,[28,0,38,15],"MASTER",9,0,"carpet"); R(fl,[28,15,38,26],"ENSUITE",9,0,"tile"); R(fl,[28,26,38,34],"LAUNDRY",9,0,"tile"); R(fl,[28,34,38,50],"DEN",9,0,"wood");
+  R(fl,[0,28,20,50],"GARAGE",9,0,"concrete"); R(fl,[20.25,27.75,27.75,49.75],"FOYER",11,0,"stone",1); R(fl,[38.25,0,72,37],"PATIO",0,0,"stone",1);
+  I(fl,"table",7,4.6); I(fl,"island",7,18); I(fl,"counter",1.25,22,0,{w:2,d:12}); I(fl,"range",1.4,13.5,90); I(fl,"fridge",12.4,26.7);
+  I(fl,"rug",20,12,90,{w:9,d:6}); I(fl,"sofa",24.8,12,90); I(fl,"coffee",19.5,12,90); I(fl,"chair",17,5,180); I(fl,"chair",17,19,0); I(fl,"plant",15.2,1.8); I(fl,"bookcase",27.2,22,90);
+  I(fl,"king",33,4.2); I(fl,"night",29.7,1.4); I(fl,"night",36.3,1.4);
+  I(fl,"vanity2",33,16.15); I(fl,"toilet",36.4,24.6,180); I(fl,"tub",29.7,23,90); I(fl,"shower",35.7,19.3);
+  I(fl,"washer",29.6,31); I(fl,"washer",32.3,31); I(fl,"desk",33.5,38); I(fl,"plant",36.8,48.3);
+  I(fl,"car",5.7,39,180); I(fl,"suv",14.2,39,180); I(fl,"stairs",22.2,35.5,0);
+  I(fl,"pool",52,14,0); I(fl,"hottub",44,31); I(fl,"lounger",62,8); I(fl,"lounger",62,14); I(fl,"patio",59,30); I(fl,"tree",68,31,0,{w:8,d:8}); I(fl,"bbq",41.5,35);
+  // ----- upper floor -----
+  const uw=[W(up,0,0,38,0),W(up,38,0,38,34),W(up,38,34,0,34),W(up,0,34,0,0)], ia=W(up,14,0,14,34); W(up,0,16,14,16); const ib=W(up,22,0,22,34); W(up,22,12,38,12);
+  O(up,ia,14,8,"door",2.7,1); O(up,ia,14,25,"door",2.7,1); O(up,ib,22,6,"door",2.7,0); O(up,ib,22,22,"door",2.7,0);
+  O(up,uw[0],7,0,"window",4); O(up,uw[0],30,0,"window",4); O(up,uw[3],0,8,"window",4); O(up,uw[3],0,25,"window",4);
+  O(up,uw[1],38,6,"window",3); O(up,uw[1],38,22,"window",5); O(up,uw[2],7,34,"window",4); O(up,uw[2],30,34,"window",5);
+  R(up,[0,0,14,16],"BEDROOM 2",9,0,"carpet"); R(up,[0,16,14,34],"BEDROOM 3",9,0,"carpet"); R(up,[14,0,22,34],"HALL",9,0,"wood"); R(up,[22,0,38,12],"BATH",9,0,"tile"); R(up,[22,12,38,34],"STUDY",9,0,"wood");
+  I(up,"queen",7,4.2); I(up,"night",3,1.4); I(up,"night",11.5,1.4); I(up,"queen",7,29.6,180); I(up,"night",3,32.6,180); I(up,"night",11.5,32.6,180);
+  I(up,"toilet",36.4,10.2,180); I(up,"vanity",29,1.2); I(up,"shower",34.7,4.3); I(up,"desk",30,31.4,180); I(up,"bookcase",37.2,22,90); I(up,"stairs",17.6,27,0);
+  return {unit:"imp",cur:0,meta:{project:"My House",address:"",author:""},floors:[fl,up]};
 }
 
 /* ================= symbols ================= */
@@ -354,25 +377,85 @@ const vanDraw=(c,w,d)=>{R_(c,-w/2,-d/2,w,d,.1);SF(c);const n=w>3.5?2:1;for(let k
 def("vanity","bath",2.5,1.8,vanDraw); def("vanity2","bath",5,1.8,vanDraw);
 def("tub","bath",5,2.5,(c,w,d)=>{R_(c,-w/2,-d/2,w,d,.3);SF(c);R_(c,-w/2+.25,-d/2+.25,w-.5,d-.5,d*.4);c.stroke();EL(c,-w/2+.8,0,.12,.12);c.stroke();});
 def("shower","bath",3,3,(c,w,d)=>{R_(c,-w/2,-d/2,w,d);SF(c);LN(c,-w/2,-d/2,w/2,d/2);LN(c,w/2,-d/2,-w/2,d/2);EL(c,0,0,.18,.18);SF(c);});
-def("stairs","other",3.5,12,(c,w,d)=>{
-  R_(c,-w/2,-d/2,w,d);SF(c); const n=Math.round(d/.95); for(let k=1;k<n;k++){const y=-d/2+d*k/n;LN(c,-w/2,y,w/2,y);}
-  LN(c,0,d/2-.4,0,-d/2+1.1); LN(c,0,-d/2+1.1,-.35,-d/2+1.6); LN(c,0,-d/2+1.1,.35,-d/2+1.6);
+const stairArrow=(c,x1,y1,x2,y2,h)=>{LN(c,x1,y1,x2,y2);const a=Math.atan2(y2-y1,x2-x1);LN(c,x2,y2,x2-Math.cos(a-.5)*h,y2-Math.sin(a-.5)*h);LN(c,x2,y2,x2-Math.cos(a+.5)*h,y2-Math.sin(a+.5)*h);};
+function flight(c,x,y,w,d,n,dir){ R_(c,x,y,w,d);SF(c); if(dir==="y"){for(let k=1;k<n;k++){const yy=y+d*k/n;LN(c,x,yy,x+w,yy);}} else {for(let k=1;k<n;k++){const xx=x+w*k/n;LN(c,xx,y,xx,y+d);}} }
+const upText=(c,x,y)=>{c.save();c.fillStyle=c.strokeStyle;c.font="700 .85px sans-serif";c.textAlign="center";c.textBaseline="middle";c.fillText("UP",x,y);c.restore();};
+def("stairs","stairs",3.5,12,(c,w,d)=>{
+  const x0=-w/2,y0=-d/2,n=Math.max(4,Math.round(d/.92)),yc=y0+d*.4;
+  R_(c,x0,y0,w,d);SF(c);
+  for(let k=1;k<n;k++){const y=y0+d*k/n; c.setLineDash(y<yc?[.35,.3]:[]); LN(c,x0,y,x0+w,y);} c.setLineDash([]);
+  c.globalAlpha=.65; LN(c,x0+.25,y0,x0+.25,y0+d); LN(c,x0+w-.25,y0,x0+w-.25,y0+d); c.globalAlpha=1;
+  c.save(); c.fillStyle=c.strokeStyle; c.beginPath(); c.fillStyle="#fbfaf5"; c.moveTo(x0,yc-.25);c.lineTo(-w*.12,yc-.25);c.lineTo(-w*.02,yc-.9);c.lineTo(w*.1,yc+.3);c.lineTo(w*.18,yc-.25);c.lineTo(x0+w,yc-.25);c.lineTo(x0+w,yc+.25);c.lineTo(x0,yc+.25);c.closePath();c.fill(); c.restore();
+  c.beginPath();c.moveTo(x0,yc);c.lineTo(-w*.12,yc);c.lineTo(-w*.02,yc-.7);c.lineTo(w*.1,yc+.5);c.lineTo(w*.18,yc);c.lineTo(x0+w,yc);c.stroke();
+  stairArrow(c,0,y0+d-1.7,0,y0+1,.65); upText(c,0,y0+d-.7);
 });
-def("car","other",6.5,15,(c,w,d)=>{
-  const x0=-w/2,y0=-d/2; R_(c,x0,y0,w,d,w*.35);SF(c);
-  R_(c,x0+w*.14,y0+d*.27,w*.72,d*.17,.4);SF(c); R_(c,x0+w*.14,y0+d*.45,w*.72,d*.25,.3);SF(c); R_(c,x0+w*.16,y0+d*.71,w*.68,d*.1,.3);SF(c);
-  R_(c,x0+.4,y0+.2,w*.2,.4,.15);SF(c); R_(c,x0+w-.4-w*.2,y0+.2,w*.2,.4,.15);SF(c);
-  R_(c,x0-.25,y0+d*.3,.3,.7,.1);SF(c); R_(c,x0+w-.05,y0+d*.3,.3,.7,.1);SF(c);
+def("stairsL","stairs",8,10,(c,w,d)=>{
+  const sw=3.5,x0=-w/2,y0=-d/2,n1=Math.max(3,Math.round((d-sw)/.92)),n2=Math.max(3,Math.round((w-sw)/.92));
+  flight(c,x0,y0+sw,sw,d-sw,n1,"y"); R_(c,x0,y0,sw,sw);SF(c); flight(c,x0+sw,y0,w-sw,sw,n2,"x");
+  LN(c,x0+sw/2,y0+d-1.5,x0+sw/2,y0+sw/2); stairArrow(c,x0+sw/2,y0+sw/2,x0+w-.8,y0+sw/2,.65); upText(c,x0+sw/2,y0+d-.6);
 });
+def("stairsU","stairs",7.8,10,(c,w,d)=>{
+  const sw=(w-.3)/2,x0=-w/2,y0=-d/2,n=Math.max(3,Math.round((d-sw)/.92));
+  flight(c,x0,y0+sw,sw,d-sw,n,"y"); flight(c,x0+sw+.3,y0+sw,sw,d-sw,n,"y"); R_(c,x0,y0,w,sw);SF(c);
+  LN(c,x0+sw/2,y0+d-1.5,x0+sw/2,y0+sw/2); LN(c,x0+sw/2,y0+sw/2,x0+w-sw/2,y0+sw/2); stairArrow(c,x0+w-sw/2,y0+sw/2,x0+w-sw/2,y0+d-1,.65); upText(c,x0+sw/2,y0+d-.6);
+});
+def("spiral","stairs",5.5,5.5,(c,w,d)=>{
+  const r=Math.min(w,d)/2; EL(c,0,0,r,r);SF(c); for(let k=0;k<14;k++){const a=k*2*PI/14;LN(c,Math.cos(a)*.5,Math.sin(a)*.5,Math.cos(a)*r,Math.sin(a)*r);}
+  EL(c,0,0,.5,.5);SF(c); const ra=r*.68,a0=PI*.15,a1=PI*1.55; c.beginPath();c.arc(0,0,ra,a0,a1);c.stroke();
+  const ex=Math.cos(a1)*ra,ey=Math.sin(a1)*ra,tx=-Math.sin(a1),ty=Math.cos(a1); LN(c,ex,ey,ex-tx*.6+Math.cos(a1)*.35,ey-ty*.6+Math.sin(a1)*.35); LN(c,ex,ey,ex-tx*.6-Math.cos(a1)*.35,ey-ty*.6-Math.sin(a1)*.35);
+});
+function carDraw(c,w,d,kind){
+  const x0=-w/2,y0=-d/2,ff=c.fillStyle, st=c.strokeStyle;
+  c.fillStyle="#2a2a2a"; for(const sx of[-1,1])for(const fy of[.19,.74]){ R_(c,sx<0?x0-.2:x0+w-.3,y0+d*fy,.5,2,.18); c.fill(); }
+  c.fillStyle=ff; const r=w*.42; c.beginPath(); c.moveTo(x0+r,y0); c.lineTo(x0+w-r,y0); c.quadraticCurveTo(x0+w,y0,x0+w,y0+r); c.lineTo(x0+w,y0+d-r*.7); c.quadraticCurveTo(x0+w,y0+d,x0+w-r*.7,y0+d); c.lineTo(x0+r*.7,y0+d); c.quadraticCurveTo(x0,y0+d,x0,y0+d-r*.7); c.lineTo(x0,y0+r); c.quadraticCurveTo(x0,y0,x0+r,y0); c.closePath(); SF(c);
+  const g={sedan:[.27,.36,.62,.72],suv:[.25,.34,.78,.86],pickup:[.24,.32,.52,.58]}[kind], yh=y0+d*g[0], yr=y0+d*g[1], yr2=y0+d*g[2], yb=y0+d*g[3];
+  LN(c,x0+w*.24,y0+d*.05,x0+w*.24,yh-.2); LN(c,x0+w*.76,y0+d*.05,x0+w*.76,yh-.2);
+  c.fillStyle="#cfdde6"; c.beginPath(); c.moveTo(x0+w*.1,yh); c.lineTo(x0+w*.9,yh); c.lineTo(x0+w*.8,yr); c.lineTo(x0+w*.2,yr); c.closePath(); SF(c);
+  c.beginPath(); c.moveTo(x0+w*.2,yr2); c.lineTo(x0+w*.8,yr2); c.lineTo(x0+w*.9,yb); c.lineTo(x0+w*.1,yb); c.closePath(); SF(c);
+  c.fillStyle=ff; R_(c,x0+w*.2,yr,w*.6,yr2-yr,.35); SF(c); LN(c,x0+w*.5,yr+.4,x0+w*.5,yr2-.4);
+  LN(c,x0+w*.1,yr,x0+w*.2,yr); LN(c,x0+w*.9,yr,x0+w*.8,yr); LN(c,x0+w*.02,yr+.4,x0+w*.02,yr2); LN(c,x0+w*.98,yr+.4,x0+w*.98,yr2);
+  if(kind==="pickup"){ const by=y0+d*.6; R_(c,x0+w*.09,by,w*.82,d*.37,.2); SF(c); for(let k=1;k<5;k++){const y=by+d*.37*k/5;LN(c,x0+w*.09,y,x0+w*.91,y);} }
+  R_(c,x0-.25,yh+.2,.32,.8,.12); SF(c); R_(c,x0+w-.07,yh+.2,.32,.8,.12); SF(c);
+  c.fillStyle="#f3e9a8"; R_(c,x0+w*.12,y0+.12,w*.24,.38,.15); SF(c); R_(c,x0+w*.64,y0+.12,w*.24,.38,.15); SF(c);
+  c.fillStyle="#c0463f"; R_(c,x0+w*.12,y0+d-.5,w*.24,.34,.12); SF(c); R_(c,x0+w*.64,y0+d-.5,w*.24,.34,.12); SF(c);
+  LN(c,x0+w*.35,y0+.35,x0+w*.65,y0+.35); c.fillStyle=ff; c.strokeStyle=st;
+}
+def("car","other",6.2,15,(c,w,d)=>carDraw(c,w,d,"sedan"));
+def("suv","other",6.7,16,(c,w,d)=>carDraw(c,w,d,"suv"));
+def("truck","other",6.7,18.5,(c,w,d)=>carDraw(c,w,d,"pickup"));
+const WATER="#a9dcf2", COPE="#e9e4d8";
+function kidneyPts(w,d,m){ const p=[]; for(let i=0;i<m;i++){ const t=i/m*2*PI; let x=(w/2)*Math.cos(t),y=(d/2)*Math.sin(t); if(x>0) x-=w*.17*Math.exp(-Math.pow(y/(d*.16),2)); p.push([x,y]); } return p; }
+const polyPath=(c,p,sx,sy)=>{sx=sx||1;sy=sy||1;c.beginPath();p.forEach(([x,y],i)=>i?c.lineTo(x*sx,y*sy):c.moveTo(x*sx,y*sy));c.closePath();};
+function waves(c,x1,x2,y1,y2,n){ c.save(); c.globalAlpha=.6; c.strokeStyle="#ffffff"; for(let k=0;k<n;k++){ const yy=y1+(y2-y1)*(k+.5)/n; c.beginPath(); for(let x=x1;x<=x2;x+=.4){ const y=yy+Math.sin(x*1.5+k*1.7)*.22; x===x1?c.moveTo(x,y):c.lineTo(x,y);} c.stroke(); } c.restore(); }
+def("pool","outdoor",12,24,(c,w,d)=>{ const x0=-w/2,y0=-d/2,cp=.9; c.fillStyle=COPE; R_(c,x0,y0,w,d,1.2);SF(c); c.fillStyle=WATER; R_(c,x0+cp,y0+cp,w-2*cp,d-2*cp,.7);SF(c);
+  c.fillStyle="#d9f0fa"; R_(c,x0+cp,y0+cp,3.4,3.4);SF(c); LN(c,x0+cp,y0+cp+1.13,x0+cp+3.4,y0+cp+1.13); LN(c,x0+cp,y0+cp+2.26,x0+cp+3.4,y0+cp+2.26);
+  waves(c,x0+cp+.6,x0+w-cp-.6,y0+cp+4.5,y0+d-cp-.5,Math.max(2,Math.round(d/5))); });
+def("poolk","outdoor",14,26,(c,w,d)=>{ const p=kidneyPts(w,d,72); c.fillStyle=COPE; polyPath(c,p);SF(c); c.fillStyle=WATER; polyPath(c,p,(w-1.9)/w,(d-1.9)/d);SF(c); waves(c,-w*.3,w*.3,-d*.3,d*.3,4); });
+def("poolr","outdoor",16,16,(c,w,d)=>{ c.fillStyle=COPE; EL(c,0,0,w/2,d/2);SF(c); c.fillStyle=WATER; EL(c,0,0,w/2-.9,d/2-.9);SF(c); waves(c,-w*.3,w*.3,-d*.28,d*.28,4); });
+def("hottub","outdoor",7,7,(c,w,d)=>{ c.fillStyle="#b78f68"; EL(c,0,0,w/2,d/2);SF(c); c.fillStyle=WATER; EL(c,0,0,w/2-.6,d/2-.6);SF(c); c.beginPath();c.arc(0,0,w/2-1.5,.3,PI-.3);c.stroke(); c.beginPath();c.arc(0,0,w/2-1.5,PI+.3,2*PI-.3);c.stroke(); EL(c,0,0,.2,.2);c.stroke(); });
+def("tree","outdoor",10,10,(c,w,d)=>{ c.fillStyle="#bcd9a0"; for(const [x,y,r] of [[0,0,.5],[.2,-.2,.42],[-.22,.18,.4],[.25,.25,.34],[-.25,-.25,.34]]){ EL(c,x*w,y*d,r*w*.62,r*d*.62);SF(c);} c.fillStyle="#7a5a3a"; EL(c,0,0,.3,.3);SF(c); });
+def("bush","outdoor",4,4,(c,w,d)=>{ c.fillStyle="#c9e0ad"; for(const [x,y] of [[-.2,-.15],[.2,-.1],[0,.2]]){EL(c,x*w,y*d,w*.3,d*.3);SF(c);} });
+def("bbq","outdoor",3,2,(c,w,d)=>{ R_(c,-w/2,-d/2,w,d,.2);SF(c); EL(c,-w*.2,0,d*.28,d*.28);c.stroke(); EL(c,w*.2,0,d*.28,d*.28);c.stroke(); });
+def("lounger","outdoor",2.2,6.2,(c,w,d)=>{ R_(c,-w/2,-d/2,w,d,.25);SF(c); R_(c,-w/2+.2,-d/2+.2,w-.4,1.6,.2);c.stroke(); LN(c,-w/2,-d/2+2.6,w/2,-d/2+2.6); });
+def("patio","outdoor",6.4,6.4,(c,w,d)=>{ EL(c,0,0,1.7,1.7);SF(c); for(const [x,y] of [[0,-2.5],[0,2.5],[-2.5,0],[2.5,0]]){EL(c,x,y,.8,.8);SF(c);} });
+def("loveseat","living",5.2,3,(c,w,d)=>sofaDraw(c,w,d,2));
+def("rug","living",8,5.5,(c,w,d)=>{ c.fillStyle="#efe6d8"; R_(c,-w/2,-d/2,w,d,.2);SF(c); R_(c,-w/2+.5,-d/2+.5,w-1,d-1,.1);c.stroke(); R_(c,-w/2+.8,-d/2+.8,w-1.6,d-1.6,.1);c.stroke(); });
+def("bookcase","living",6,1,(c,w,d)=>{ R_(c,-w/2,-d/2,w,d);SF(c); for(let x=-w/2+1;x<w/2-.1;x+=1)LN(c,x,-d/2,x,d/2); });
+def("piano","living",5,2.2,(c,w,d)=>{ c.fillStyle="#2a2a2e"; R_(c,-w/2,-d/2,w,d,.3);SF(c); c.fillStyle="#ffffff"; R_(c,-w/2+.3,d/2-.75,w-.6,.55,.05);SF(c); });
+def("round","living",4.8,4.8,(c,w,d)=>{ EL(c,0,0,1.6,1.6);SF(c); for(const [x,y] of [[0,-2.05],[0,2.05],[-2.05,0],[2.05,0]]){R_(c,x-.5,y-.5,1,1,.25);SF(c);} });
+def("dchair","living",1.6,1.6,(c,w,d)=>{ R_(c,-w/2,-d/2,w,d,.2);SF(c); R_(c,-w/2,-d/2,w,.35,.1);SF(c); });
+def("crib","bed",2.4,4.6,(c,w,d)=>{ R_(c,-w/2,-d/2,w,d,.1);SF(c); R_(c,-w/2+.2,-d/2+.2,w-.4,d-.4,.1);c.stroke(); for(let y=-d/2+.6;y<d/2-.3;y+=.5){LN(c,-w/2,y,-w/2+.2,y);LN(c,w/2-.2,y,w/2,y);} });
+def("plant","other",2,2,(c,w,d)=>{ c.fillStyle="#bcd9a0"; for(let k=0;k<6;k++){const a=k*PI/3;EL(c,Math.cos(a)*.45,Math.sin(a)*.45,.5,.3);SF(c);} c.fillStyle="#7a5a3a"; EL(c,0,0,.25,.25);SF(c); });
+def("ksink","kitchen",3,2,(c,w,d)=>{ R_(c,-w/2,-d/2,w,d);SF(c); R_(c,-w/2+.2,-d/2+.3,w/2-.3,d-.6,.2);c.stroke(); R_(c,.1,-d/2+.3,w/2-.3,d-.6,.2);c.stroke(); EL(c,0,-d/2+.15,.07,.07);c.stroke(); });
 def("washer","other",2.3,2.3,(c,w,d)=>{R_(c,-w/2,-d/2,w,d,.1);SF(c);EL(c,0,.2,Math.min(w,d)*.3,Math.min(w,d)*.3);c.stroke();LN(c,-w/2,-d/2+.5,w/2,-d/2+.5);});
 def("column","other",1,1,(c,w,d)=>{R_(c,-w/2,-d/2,w,d);c.fillStyle=c.strokeStyle;c.fill();});
-const GROUPS=["living","bed","kitchen","bath","other"];
+const GROUPS=["living","bed","kitchen","bath","stairs","outdoor","other"];
 
 /* ================= state ================= */
 const cv=document.getElementById("c"), ctx=cv.getContext("2d"), tb=document.getElementById("textbox");
 const $=id=>document.getElementById(id);
 let undoS=[],redoS=[], view={ox:60,oy:60,s:14}, tool="select", placeK=null, ghostRot=0;
-let sel=null, ortho=true, showDims=false, showGrid=true, bp=false, snapV=0.5;
+let sel=null, ortho=true, showDims=false, showGrid=true, bp=false, snapV=0.5, dimMode=1, paperView=true, doorStyle="door";
 let drag=null, hover=null, spaceDown=false, shiftDown=false, polyPts=[], editing=null, lastFill="#cfe3e1";
 const SW=["#cfe3e1","#e8e1d0","#dcdfe2","#f0d9d9","#dbe6f5","#e6f0d4","#f5e6c8","#ffffff"];
 
@@ -416,13 +499,13 @@ function hit(p){
 function nearestWall(p){ let best=null,bd=Math.max(.8,14/view.s); for(const w of F().walls){const r=segDist(p.x,p.y,w.x1,w.y1,w.x2,w.y2); if(r.d<bd){bd=r.d;best={w,t:r.t};}} return best; }
 
 /* ================= rendering ================= */
-const LIGHT={paper:"#ffffff",grid:"#eef1f5",major:"#d9dfe8",ink:"#1a1d22",dim:"#1f5eff",sel:"#ff6a00"};
-const BPP={paper:"#0b3a7a",grid:"#1a4f9a",major:"#2a68bd",ink:"#ffffff",dim:"#ffd24d",sel:"#ff9a4d"};
-function pal(){ if(bp) return BPP; const g=n=>getComputedStyle(cv).getPropertyValue(n).trim(); return {paper:g("--paper"),grid:g("--grid"),major:g("--grid-major"),ink:g("--ink"),dim:g("--dim"),sel:g("--sel")}; }
+const LIGHT={paper:"#fbfaf5",grid:"#e8edf3",major:"#d3dbe7",ink:"#1b1f27",dim:"#2456d6",sel:"#ff6a00",desk:"#9aa2ad"};
+const BPP={paper:"#0b3a7a",grid:"#1a4f9a",major:"#2a68bd",ink:"#ffffff",dim:"#ffd24d",sel:"#ff9a4d",desk:"#082a5a"};
+function pal(){ if(bp) return BPP; const dark=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches; return dark?Object.assign({},LIGHT,{desk:"#2b2f36"}):LIGHT; }
 
 let autoFit=true;
 function resize(){ const r=cv.getBoundingClientRect(),d=window.devicePixelRatio||1; cv.width=Math.round(r.width*d); cv.height=Math.round(r.height*d); ctx.setTransform(d,0,0,d,0,0); autoFit?fit():draw(); }
-function draw(){ render(ctx,cv.clientWidth,cv.clientHeight,view,pal(),true); status(); }
+function draw(){ render(ctx,cv.clientWidth,cv.clientHeight,view,pal(),true,{sheet:paperView}); status(); }
 
 function contentBounds(f){
   const xs=[],ys=[];
@@ -438,20 +521,27 @@ function render(c,W,H,v,P,inter,ro){
   ro=ro||{}; const K=ro.lw||1;
   const f=F(), S=v.s, X=x=>v.ox+x*S, Y=y=>v.oy+y*S;
   const bpLook = P===BPP, fi = bpLook?"#ffffff":"#2b3a3a", ff = bpLook?"rgba(255,255,255,.08)":"#ffffff", rt = bpLook?"#ffffff":"#1b2b2b";
-  if(!ro.noBg){ c.fillStyle=P.paper; c.fillRect(0,0,W,H); }
+  const SG=(inter&&ro.sheet&&doc.sheet)?sheetGeom(v):null;
+  if(!ro.noBg){
+    if(SG){ c.fillStyle=P.desk||"#9aa2ad"; c.fillRect(0,0,W,H); c.save(); c.shadowColor="rgba(0,0,0,.38)"; c.shadowBlur=24; c.shadowOffsetY=6; c.fillStyle=P.paper; c.fillRect(SG.sx,SG.sy,SG.sw,SG.sh); c.restore(); if(!bpLook){ c.fillStyle=paperPattern(c); c.fillRect(SG.sx,SG.sy,SG.sw,SG.sh); } }
+    else { c.fillStyle=P.paper; c.fillRect(0,0,W,H); }
+  }
 
   if(inter && showGrid){
+    if(SG){c.save();c.beginPath();c.rect(SG.sx,SG.sy,SG.sw,SG.sh);c.clip();}
     const g = doc.unit==="met" ? 1/FT : 1, minor = S*g>=14 ? g : g*5, maj=minor*5;
     const x0=Math.floor(-v.ox/S/minor)-1, x1=Math.ceil((W-v.ox)/S/minor)+1, y0=Math.floor(-v.oy/S/minor)-1, y1=Math.ceil((H-v.oy)/S/minor)+1;
     c.lineWidth=1;
     for(let i=x0;i<=x1;i++){ c.strokeStyle=(i*minor)%maj<1e-6?P.major:P.grid; const sx=Math.round(X(i*minor))+.5; c.beginPath();c.moveTo(sx,0);c.lineTo(sx,H);c.stroke(); }
     for(let i=y0;i<=y1;i++){ c.strokeStyle=(i*minor)%maj<1e-6?P.major:P.grid; const sy=Math.round(Y(i*minor))+.5; c.beginPath();c.moveTo(0,sy);c.lineTo(W,sy);c.stroke(); }
+    if(SG)c.restore();
   }
 
   // rooms
   for(const r of f.rooms){
     c.beginPath(); r.pts.forEach((p,i)=>i?c.lineTo(X(p[0]),Y(p[1])):c.moveTo(X(p[0]),Y(p[1]))); c.closePath();
     c.globalAlpha=bpLook?.35:1; c.fillStyle=r.fill; c.fill(); c.globalAlpha=1;
+    if(r.floor&&r.floor!=="none"&&S>=5) floorPattern(c,r,v,bpLook);
     if(inter&&sel&&sel.item===r){c.strokeStyle=P.sel;c.lineWidth=2;c.setLineDash([6,4]);c.stroke();c.setLineDash([]);
       for(const p of r.pts){c.fillStyle=P.sel;c.fillRect(X(p[0])-4,Y(p[1])-4,8,8);} }
   }
@@ -470,9 +560,11 @@ function render(c,W,H,v,P,inter,ro){
     s.draw(c,it.w,it.d);
     if(inter&&sel&&sel.item===it){c.strokeStyle=P.sel;c.lineWidth=2/S;c.setLineDash([5/S,4/S]);c.strokeRect(-it.w/2-.2,-it.d/2-.2,it.w+.4,it.d+.4);}
     c.restore();
+    if(inter&&sel&&sel.item===it){ c.save(); c.fillStyle=P.sel; c.font="600 12px sans-serif"; c.textAlign="center"; c.textBaseline="top"; c.fillText(fmt(it.w)+" × "+fmt(it.d),X(it.x),Y(it.y)+Math.hypot(it.w,it.d)/2*S*.8+6); c.restore(); }
   }
   // wall dimensions
-  if((showDims&&inter)||ro.wallDims){
+  { const dm=ro.dimMode!==undefined?ro.dimMode:(inter?dimMode:0); if(dm) drawWallDims(c,f,v,P,K,ro,dm); }
+  if(false){
     c.textAlign="center";c.textBaseline="middle";
     for(const w of f.walls){ const L=wlen(w); if(L*S<46)continue;
       const ax=X(w.x1),ay=Y(w.y1),bx=X(w.x2),by=Y(w.y2); let nx=-(by-ay),ny=bx-ax; const nl=Math.hypot(nx,ny)||1; nx/=nl;ny/=nl; const off=(w.th||.5)*S/2+11;
@@ -494,7 +586,8 @@ function render(c,W,H,v,P,inter,ro){
   for(const l of f.labels){ const px=Math.max(l.size*S,7); c.font=`600 ${px}px sans-serif`; c.fillStyle=(inter&&sel&&sel.item===l)?P.sel:P.ink; c.fillText(l.text,X(l.x),Y(l.y)); }
   // title block
   const cb=contentBounds(f);
-  if(f.showTitle && cb && !ro.noTitle){
+  if(SG) drawSheetFrame(c,SG,P,f);
+  if(f.showTitle && cb && !ro.noTitle && !SG){
     const a=totalArea(f), x=X(cb.x1), y0=Y(cb.y2+3.5); c.textAlign="left"; c.textBaseline="alphabetic"; c.fillStyle=P.ink;
     c.font=`700 ${Math.max(10,2.1*S)}px sans-serif`; c.fillText(f.name.toUpperCase(),x,y0);
     if(a>0){ c.font=`${Math.max(8,1.05*S)}px sans-serif`; c.fillText(`${f.name.toUpperCase()} ${t("areaWord")}: ${fmtArea(a)}`,x,y0+Math.max(12,1.9*S)); }
@@ -522,19 +615,71 @@ function render(c,W,H,v,P,inter,ro){
 }
 
 function drawOpening(c,o,v,P,ink,K){
-  K=K||1;
-  const g=opening(o); if(!g)return; const S=v.s,{dx,dy,cx,cy}=g,nx=-dy,ny=dx,h=o.w/2, th=Math.max(2,(g.w.th||.5)*S);
-  const X=x=>v.ox+x*S,Y=y=>v.oy+y*S, A={x:X(cx-dx*h),y:Y(cy-dy*h)}, B={x:X(cx+dx*h),y:Y(cy+dy*h)};
+  K=K||1; const g=opening(o); if(!g)return; const S=v.s,{dx,dy,cx,cy}=g,nx=-dy,ny=dx,h=o.w/2, th=Math.max(2,(g.w.th||.5)*S);
+  const X=x=>v.ox+x*S,Y=y=>v.oy+y*S, A={x:X(cx-dx*h),y:Y(cy-dy*h)}, B={x:X(cx+dx*h),y:Y(cy+dy*h)}, M={x:(A.x+B.x)/2,y:(A.y+B.y)/2};
   c.strokeStyle=P.paper; c.lineWidth=th+2; c.beginPath();c.moveTo(A.x,A.y);c.lineTo(B.x,B.y);c.stroke();
-  // keep room fill look: paper gap sits on the wall only
-  c.strokeStyle=ink; c.lineWidth=Math.max(1.4*K,th*.16);
-  if(o.type==="window"){ const q=th*.3; c.beginPath(); for(const k of[-1,0,1]){c.moveTo(A.x+nx*q*k,A.y+ny*q*k);c.lineTo(B.x+nx*q*k,B.y+ny*q*k);} c.moveTo(A.x-nx*q,A.y-ny*q);c.lineTo(A.x+nx*q,A.y+ny*q);c.moveTo(B.x-nx*q,B.y-ny*q);c.lineTo(B.x+nx*q,B.y+ny*q);c.stroke(); return; }
-  const flip=o.sw&1, side=(o.sw&2)?-1:1, ddx=flip?-dx:dx, ddy=flip?-dy:dy, Hh={x:X(cx-ddx*h),y:Y(cy-ddy*h)}, r=o.w*S;
-  c.beginPath();c.moveTo(Hh.x,Hh.y);c.lineTo(Hh.x+nx*side*r,Hh.y+ny*side*r);c.stroke();
-  const a1=Math.atan2(ny*side,nx*side),a2=Math.atan2(ddy,ddx); let diff=a2-a1; while(diff>PI)diff-=2*PI; while(diff<-PI)diff+=2*PI;
-  c.lineWidth=Math.max(K,th*.1);c.globalAlpha=.7;c.beginPath();c.arc(Hh.x,Hh.y,r,a1,a2,diff<0);c.stroke();c.globalAlpha=1;
+  c.strokeStyle=ink; c.lineWidth=Math.max(1.4*K,th*.16); const t=o.type, side=(o.sw&2)?-1:1;
+  if(t==="window"){ const q=th*.3; c.beginPath(); for(const k of[-1,0,1]){c.moveTo(A.x+nx*q*k,A.y+ny*q*k);c.lineTo(B.x+nx*q*k,B.y+ny*q*k);} c.moveTo(A.x-nx*q,A.y-ny*q);c.lineTo(A.x+nx*q,A.y+ny*q);c.moveTo(B.x-nx*q,B.y-ny*q);c.lineTo(B.x+nx*q,B.y+ny*q);c.stroke(); return; }
+  const jamb=()=>{ c.beginPath(); for(const p of [A,B]){c.moveTo(p.x-nx*th*.5,p.y-ny*th*.5);c.lineTo(p.x+nx*th*.5,p.y+ny*th*.5);} c.stroke(); };
+  if(t==="open"){ jamb(); return; }
+  if(t==="slide"){ jamb(); const q=th*.2, ux=dx*S*.04*o.w, uy=dy*S*.04*o.w; c.lineWidth=Math.max(1.2*K,th*.1);
+    c.beginPath(); c.moveTo(A.x+nx*q,A.y+ny*q); c.lineTo(M.x+dx*S*.45+nx*q,M.y+dy*S*.45+ny*q); c.moveTo(M.x-dx*S*.45-nx*q,M.y-dy*S*.45-ny*q); c.lineTo(B.x-nx*q,B.y-ny*q); c.stroke();
+    c.beginPath(); c.moveTo(A.x-nx*q,A.y-ny*q); c.lineTo(M.x+dx*S*.45-nx*q,M.y+dy*S*.45-ny*q); c.moveTo(M.x-dx*S*.45+nx*q,M.y-dy*S*.45+ny*q); c.lineTo(B.x+nx*q,B.y+ny*q); c.stroke(); return; }
+  if(t==="garage"){ jamb(); c.setLineDash([7*K,5*K]); c.lineWidth=Math.max(K,th*.08); for(const k of[-.32,.32]){ c.beginPath(); c.moveTo(A.x+nx*th*k,A.y+ny*th*k); c.lineTo(B.x+nx*th*k,B.y+ny*th*k); c.stroke(); } c.setLineDash([]); return; }
+  const leaf=(hx,hy,ddx,ddy,len)=>{
+    c.lineWidth=Math.max(1.4*K,th*.16); c.beginPath();c.moveTo(hx,hy);c.lineTo(hx+nx*side*len,hy+ny*side*len);c.stroke();
+    const a1=Math.atan2(ny*side,nx*side),a2=Math.atan2(ddy,ddx); let diff=a2-a1; while(diff>PI)diff-=2*PI; while(diff<-PI)diff+=2*PI;
+    c.lineWidth=Math.max(K,th*.1);c.globalAlpha=.7;c.beginPath();c.arc(hx,hy,len,a1,a2,diff<0);c.stroke();c.globalAlpha=1; };
+  if(t==="double"){ const L=o.w*S/2; leaf(A.x,A.y,dx,dy,L); leaf(B.x,B.y,-dx,-dy,L); return; }
+  const flip=o.sw&1, hh=flip?B:A; leaf(hh.x,hh.y,flip?-dx:dx,flip?-dy:dy,o.w*S);
 }
-
+let _paperPat=null;
+function paperPattern(c){ if(_paperPat)return _paperPat; const tc=document.createElement("canvas"); tc.width=tc.height=180; const g=tc.getContext("2d");
+  for(let i=0;i<1100;i++){ g.fillStyle=`rgba(${110+Math.random()*60|0},${95+Math.random()*50|0},70,${Math.random()*.045})`; g.fillRect(Math.random()*180,Math.random()*180,1+Math.random()*2,1+Math.random()*2); }
+  for(let i=0;i<40;i++){ g.strokeStyle=`rgba(120,105,80,${Math.random()*.03})`; g.beginPath(); const y=Math.random()*180; g.moveTo(0,y); g.lineTo(180,y+Math.random()*3); g.stroke(); }
+  _paperPat=c.createPattern(tc,"repeat"); return _paperPat; }
+function sheetGeom(v){ const si=sheetInfo(doc),sh=doc.sheet; return {si,sx:v.ox+sh.x*v.s,sy:v.oy+sh.y*v.s,sw:si.W*v.s,sh:si.H*v.s,k:v.s/si.ppf,s:v.s}; }
+function drawSheetFrame(c,SG,P,f){
+  const {si,sx,sy,sw,sh,k}=SG, ink=P.ink, m=si.mg*k; c.save(); c.strokeStyle=ink; c.fillStyle=ink; c.lineWidth=Math.max(1.5,.03*k);
+  c.strokeRect(sx+m,sy+m,sw-2*m,sh-2*m);
+  c.fillStyle=P.paper; c.fillRect(sx+m+1,sy+sh-m-si.tbIn*k,sw-2*m-2,si.tbIn*k-1); c.fillStyle=ink;
+  drawTitleBlock(c,sx+m,sy+m,sw-2*m,sh-2*m,si.tbIn*k,f,scaleLabel(doc.sheet.ppf),doc.cur,k,ink,t("pr_plan"));
+  drawNorth(c,sx+sw-(si.mg+.7)*k,sy+(si.mg+.95)*k,.28*k,ink,Math.max(1,k/96));
+  drawScaleBar(c,sx+(si.mg+.3)*k,sy+sh-(si.mg+si.tbIn+.4)*k,SG.s,ink,k);
+  c.restore();
+}
+function floorPattern(c,r,v,bpl){
+  const S=v.s,X=x=>v.ox+x*S,Y=y=>v.oy+y*S,b=bbox(r.pts); c.save(); c.beginPath(); r.pts.forEach((p,i)=>i?c.lineTo(X(p[0]),Y(p[1])):c.moveTo(X(p[0]),Y(p[1]))); c.closePath(); c.clip();
+  c.lineWidth=1; c.strokeStyle=bpl?"rgba(255,255,255,.28)":"rgba(70,55,40,.2)"; const f=r.floor; c.beginPath();
+  const pl=(x1,y1,x2,y2)=>{c.moveTo(X(x1),Y(y1));c.lineTo(X(x2),Y(y2));};
+  if(f==="wood"){ const row=.5; let k=0; for(let y=Math.floor(b.y1/row)*row;y<=b.y2;y+=row,k++){ pl(b.x1,y,b.x2,y); if(S>=9) for(let x=b.x1+((k*1.7)%4);x<b.x2;x+=4) pl(x,y,x,y+row); } }
+  else if(f==="tile"){ const st=S<9?2:1; for(let x=Math.floor(b.x1/st)*st;x<=b.x2;x+=st)pl(x,b.y1,x,b.y2); for(let y=Math.floor(b.y1/st)*st;y<=b.y2;y+=st)pl(b.x1,y,b.x2,y); }
+  else if(f==="stone"){ const rh=.9; let k=0; for(let y=Math.floor(b.y1/rh)*rh;y<=b.y2;y+=rh,k++){ pl(b.x1,y,b.x2,y); for(let x=b.x1+(k%2?.9:0);x<b.x2;x+=1.8) pl(x,y,x,y+rh); } }
+  else if(f==="carpet"&&S>=7){ c.strokeStyle=bpl?"rgba(255,255,255,.12)":"rgba(90,70,50,.09)"; const st=.4; for(let x=b.x1-(b.y2-b.y1);x<b.x2;x+=st) pl(x,b.y1,x+(b.y2-b.y1),b.y2); }
+  else if(f==="concrete"){ c.setLineDash([6,5]); const st=10; for(let x=Math.ceil(b.x1/st)*st;x<b.x2;x+=st)pl(x,b.y1,x,b.y2); for(let y=Math.ceil(b.y1/st)*st;y<b.y2;y+=st)pl(b.x1,y,b.x2,y); }
+  else if(f==="grass"){ c.strokeStyle="rgba(60,110,40,.5)"; let q=1; for(let y=b.y1;y<b.y2;y+=1.1)for(let x=b.x1;x<b.x2;x+=1.1){ q=(q*9301+49297)%233280; const dx=(q/233280-.5)*.7; pl(x+dx,y,x+dx+.1,y-.4); } }
+  else if(f==="water"){ c.strokeStyle="rgba(255,255,255,.65)"; let k=0; for(let y=b.y1+.8;y<b.y2;y+=1.5,k++){ for(let x=b.x1;x<=b.x2;x+=.5){ const yy=y+Math.sin(x*1.4+k)*.22; x===b.x1?c.moveTo(X(x),Y(yy)):c.lineTo(X(x),Y(yy)); } } }
+  c.stroke(); c.restore();
+}
+function drawWallDims(c,f,v,P,K,ro,dm){
+  const S=v.s,X=x=>v.ox+x*S,Y=y=>v.oy+y*S,fs=ro.dimFont||11, inRoom=(x,y)=>f.rooms.some(r=>inPoly(x,y,r.pts));
+  c.save(); c.strokeStyle=P.dim; c.fillStyle=P.dim; c.lineWidth=Math.max(1,K); c.textAlign="center"; c.textBaseline="alphabetic"; c.font=`${fs}px sans-serif`;
+  for(const w of f.walls){
+    const L=wlen(w); if(L<1.5)continue; const ux=(w.x2-w.x1)/L,uy=(w.y2-w.y1)/L,nx=-uy,ny=ux,mx=(w.x1+w.x2)/2,my=(w.y1+w.y2)/2;
+    const a=inRoom(mx+nx*1.2,my+ny*1.2), b=inRoom(mx-nx*1.2,my-ny*1.2); if(a&&b)continue;
+    const sg=(a&&!b)?-1:1, th=(w.th||.5)/2, off=th+1.9;
+    let pts=[0,L]; if(dm===2) for(const o of f.openings) if(o.wall===w.id) pts.push(Math.max(0,o.t*L-o.w/2),Math.min(L,o.t*L+o.w/2));
+    pts=[...new Set(pts.map(x=>Math.round(x*100)/100))].sort((p,q)=>p-q).filter((x,i,arr)=>i===0||x-arr[i-1]>.05);
+    const Pt=(s2,o2)=>({x:X(w.x1+ux*s2+nx*sg*o2),y:Y(w.y1+uy*s2+ny*sg*o2)}), e0=Pt(pts[0],off), e1=Pt(pts[pts.length-1],off);
+    c.lineWidth=Math.max(1,K); c.beginPath(); c.moveTo(e0.x,e0.y); c.lineTo(e1.x,e1.y);
+    for(const s2 of pts){ const q0=Pt(s2,th+.25), q1=Pt(s2,off+.5); c.moveTo(q0.x,q0.y); c.lineTo(q1.x,q1.y); } c.stroke();
+    const tk=Math.max(3.5,.4*S)*.8, tx=(ux+nx*sg)/Math.SQRT2*tk, ty=(uy+ny*sg)/Math.SQRT2*tk; c.lineWidth=Math.max(1.5,K*1.6); c.beginPath(); for(const s2 of pts){const q=Pt(s2,off); c.moveTo(q.x-tx,q.y-ty); c.lineTo(q.x+tx,q.y+ty);} c.stroke();
+    let ang=Math.atan2(uy,ux); if(ang>PI/2||ang<-PI/2) ang+=PI; const upx=Math.sin(ang),upy=-Math.cos(ang), outUp=(upx*nx*sg+upy*ny*sg)>0;
+    for(let i=0;i<pts.length-1;i++){ const len=pts[i+1]-pts[i], txt=fmt(len), wpx=c.measureText(txt).width+6; if(len*S<wpx)continue;
+      const m=Pt((pts[i]+pts[i+1])/2,off); c.save(); c.translate(m.x,m.y); c.rotate(ang); c.fillText(txt,0,outUp?-3:fs+1); c.restore(); }
+  }
+  c.restore();
+}
 function dimGeom(d){ const L=Math.hypot(d.x2-d.x1,d.y2-d.y1)||1e-6, ux=(d.x2-d.x1)/L, uy=(d.y2-d.y1)/L, nx=-uy, ny=ux, o=d.off||0; return {L,ux,uy,nx,ny,ax:d.x1+nx*o,ay:d.y1+ny*o,bx:d.x2+nx*o,by:d.y2+ny*o}; }
 function drawDim(c,d,v,P,col,K,ro){
   const g=dimGeom(d),S=v.s,X=x=>v.ox+x*S,Y=y=>v.oy+y*S,sg=(d.off||1)<0?-1:1;
@@ -621,8 +766,8 @@ cv.addEventListener("pointerdown",e=>{
   else if(tool==="room"){drag={type:"room",a:{x:snap(p.x),y:snap(p.y)},b:{x:snap(p.x),y:snap(p.y)},moved:false,sx:q.x,sy:q.y};}
   else if(tool==="door"||tool==="window"){
     const h=hit(p);
-    if(h&&h.kind==="openings"&&h.item.type==="door"&&tool==="door"){push();h.item.sw=(h.item.sw+1)%4;sel=h;}
-    else{const n=nearestWall(p); if(n){const L=wlen(n.w),w=tool==="door"?3:4,m=(w/2)/L; push(); const o={id:uid(),wall:n.w.id,t:Math.max(m,Math.min(1-m,n.t)),type:tool,w:L<w?L*.8:w,sw:0}; f.openings.push(o); sel={kind:"openings",item:o};}}
+    if(h&&h.kind==="openings"&&h.item.type!=="window"&&h.item.type!=="slide"&&h.item.type!=="garage"&&h.item.type!=="open"&&tool==="door"){push();h.item.sw=(h.item.sw+1)%4;sel=h;}
+    else{const n=nearestWall(p); if(n){const ty=tool==="door"?doorStyle:"window",L=wlen(n.w),w=DEFW[ty],m=(w/2)/L; push(); const o={id:uid(),wall:n.w.id,t:Math.max(m,Math.min(1-m,n.t)),type:ty,w:L<w?L*.8:w,sw:0}; f.openings.push(o); sel={kind:"openings",item:o};}}
     renderProps(); draw();
   }
   else if(tool==="place"){const s=SYM[placeK]; push(); const it={id:uid(),k:placeK,x:snap(p.x),y:snap(p.y),w:s.w,d:s.d,rot:ghostRot}; f.items.push(it); sel={kind:"items",item:it}; renderProps(); draw();}
@@ -767,6 +912,10 @@ function renderProps(){
   const el=$("props"), f=F(); let h="";
   if(!sel){
     h=`<h3>${t("p_project")}</h3>`+row(t("p_pname"),`<input data-f="pname" value="${esc(doc.meta.project)}">`)+row(t("p_addr"),`<input data-f="paddr" value="${esc(doc.meta.address)}">`)+row(t("p_author"),`<input data-f="pauthor" value="${esc(doc.meta.author)}">`)
+     +`<h3>${t("p_sheet")}</h3>`+row(t("p_paper"),`<select data-f="shPaper">${Object.entries(PAPERS).map(([k,v])=>`<option value="${k}" ${doc.sheet.paper===k?"selected":""}>${v[0]}</option>`).join("")}</select>`)
+     +row(t("pr_orient"),`<select data-f="shOrient"><option value="1" ${doc.sheet.land?"selected":""}>${t("pr_land")}</option><option value="0" ${doc.sheet.land?"":"selected"}>${t("pr_port")}</option></select>`)
+     +row(t("pr_scale"),`<select data-f="shScale">${(doc.unit==="met"?SC_MET:SC_IMP).map(([v2,l])=>`<option value="${v2}" ${Math.abs(doc.sheet.ppf-v2)<1e-4?"selected":""}>${l}</option>`).join("")}</select>`)
+     +`<div class="btns" style="margin-bottom:10px"><button id="centersheet">${t("p_center")}</button></div>`
      +`<h3>${t("p_floor")}</h3>`+row(t("p_name"),`<input data-f="floorName" value="${esc(f.name)}">`)+row(t("p_wallh"),lenIn("wallH",f.wallH))
      +`<label class="row inline"><span>${t("p_title")}</span><input type="checkbox" data-f="showTitle" ${f.showTitle?"checked":""}></label>`
      +row(t("p_units"),`<select data-f="unit"><option value="imp" ${doc.unit==="imp"?"selected":""}>${t("imp")}</option><option value="met" ${doc.unit==="met"?"selected":""}>${t("met")}</option></select>`)
@@ -776,11 +925,12 @@ function renderProps(){
   } else {
     const it=sel.item;
     if(sel.kind==="walls") h=`<h3>${t("p_wall")}</h3>`+row(t("p_th"),lenIn("th",it.th||.5))+`<div class="row"><span>${t("p_len")}</span><span class="ro">${fmt(wlen(it))}</span></div>`+delBtn();
-    else if(sel.kind==="openings") h=`<h3>${t("p_opening")}</h3>`+row(t("p_type"),`<select data-f="otype"><option value="door" ${it.type==="door"?"selected":""}>${t("door")}</option><option value="window" ${it.type==="window"?"selected":""}>${t("window")}</option></select>`)+row(t("p_width"),lenIn("w",it.w))+(it.type==="door"?`<div class="btns"><button id="swing">${t("p_swing")}</button></div>`:"")+delBtn();
+    else if(sel.kind==="openings") h=`<h3>${t("p_opening")}</h3>`+row(t("p_type"),`<select data-f="otype">${OTYPES.map(k=>`<option value="${k}" ${it.type===k?"selected":""}>${t("ty_"+k)}</option>`).join("")}</select>`)+row(t("p_width"),lenIn("w",it.w))+((it.type==="door"||it.type==="double")?`<div class="btns"><button id="swing">${t("p_swing")}</button></div>`:"")+delBtn();
     else if(sel.kind==="items") h=`<h3>${t("s_"+it.k)}</h3>`+row(t("p_width"),lenIn("w",it.w))+row(t("p_depth"),lenIn("d",it.d))+row(t("p_rot"),`<input data-f="rot" value="${Math.round(it.rot)}">`)+`<div class="btns"><button id="rot90">${t("p_rot90")}</button><button id="dup">${t("p_dup")}</button></div>`+delBtn();
     else if(sel.kind==="rooms"){ const b=bbox(it.pts);
       h=`<h3>${t("p_room")}</h3>`+row(t("p_name"),`<input data-f="name" value="${esc(it.name)}">`)+row(t("p_ceil"),lenIn("ceil",it.ceil||0))
        +`<span class="note">${t("p_fill")}</span><div class="sw">${SW.map(c=>`<i data-fill="${c}" style="background:${c}"></i>`).join("")}</div><input type="color" data-f="fill" value="${esc(it.fill)}" style="margin-bottom:9px">`
+       +row(t("p_floortype"),`<select data-f="floor">${FLOORS.map(k=>`<option value="${k}" ${(it.floor||"none")===k?"selected":""}>${t("fl_"+k)}</option>`).join("")}</select>`)
        +`<label class="row inline"><span>${t("p_showdims")}</span><input type="checkbox" data-f="showDims" ${it.showDims?"checked":""}></label>`
        +`<div class="row"><span>${t("p_roomarea")}</span><span class="ro">${fmtArea(polyArea(it.pts))}</span></div><div class="row"><span class="ro">${fmt(b.x2-b.x1)} x ${fmt(b.y2-b.y1)}</span></div>`
        +`<div class="btns"><button id="dup">${t("p_dup")}</button></div>`+delBtn(); }
@@ -799,6 +949,7 @@ $("props").addEventListener("click",e=>{
   else if(b.id==="rot90"){push();it.rot=(it.rot+90)%360;renderProps();draw();}
   else if(b.id==="swing"){push();it.sw=(it.sw+1)%4;draw();}
   else if(b.id==="flipdim"){push();it.off=-(it.off||2.5);draw();}
+  else if(b.id==="centersheet"){push();ensureSheet(doc,true);autoFit=true;fit();}
   else if(b.id==="delfloor"){ if(!b.dataset.armed){b.dataset.armed=1;b.textContent=t("askf");return;} push();doc.floors.splice(doc.cur,1);doc.cur=Math.max(0,doc.cur-1);floorsBar();renderProps();fit(); }
   else if(b.dataset.fill){push();it.fill=lastFill=b.dataset.fill;renderProps();draw();}
 });
@@ -818,7 +969,9 @@ $("props").addEventListener("change",e=>{
   else if(k==="size"){const v=parseFloat(n.value);if(v>0){push();it.size=v;}}
   else if(k==="fill"){push();it.fill=lastFill=n.value;}
   else if(k==="showDims"){push();it.showDims=n.checked;}
-  else if(k==="otype"){push();it.type=n.value;}
+  else if(k==="otype"){push();it.type=n.value;it.w=DEFW[n.value]||it.w;}
+  else if(k==="floor"){push();it.floor=n.value; if(FLOORFILL[n.value]) it.fill=FLOORFILL[n.value];}
+  else if(k==="shPaper"||k==="shOrient"||k==="shScale"){push(); const sh=doc.sheet; if(k==="shPaper")sh.paper=n.value; else if(k==="shOrient")sh.land=n.value==="1"; else sh.ppf=parseFloat(n.value); ensureSheet(doc,true); autoFit=true; fit();}
   else if(k==="rot"){const v=parseFloat(n.value);if(!isNaN(v)){push();it.rot=((v%360)+360)%360;}}
   else if(["w","d","th","ceil"].includes(k)){const v=len();if(v>=0&&!isNaN(v)){push();it[k]=v;}}
   renderProps();draw();
@@ -833,12 +986,15 @@ function syncUnits(){
 $("snap").onchange=e=>{snapV=parseFloat(e.target.value);};
 $("undo").onclick=undo;$("redo").onclick=redo;$("fit").onclick=()=>{ if(mode==="3d"){reset3D();return;} autoFit=true;fit(); };
 $("ortho").onclick=e=>{ortho=!ortho;e.currentTarget.setAttribute("aria-pressed",ortho);};
-$("dims").onclick=e=>{showDims=!showDims;e.currentTarget.setAttribute("aria-pressed",showDims);draw();};
+$("dims").onclick=e=>{ dimMode=(dimMode+1)%3; const k=["dims_off","dims_walls","dims_chain"][dimMode]; e.currentTarget.dataset.i=k; e.currentTarget.textContent=t(k); e.currentTarget.setAttribute("aria-pressed",dimMode>0); draw(); };
+$("paperbtn").onclick=e=>{ paperView=!paperView; e.currentTarget.setAttribute("aria-pressed",paperView); autoFit=true; fit(); };
+$("dstyle").onchange=e=>{ doorStyle=e.target.value; setTool("door"); };
 $("grid").onclick=e=>{showGrid=!showGrid;e.currentTarget.setAttribute("aria-pressed",showGrid);draw();};
 $("bpmode").onclick=e=>{bp=!bp;e.currentTarget.setAttribute("aria-pressed",bp);draw();};
 
 function fit(){
   const b=contentBounds(F()),W=cv.clientWidth,H=cv.clientHeight;
+  if(paperView&&doc.sheet&&W>0){ const si=sheetInfo(doc),sh=doc.sheet,s=Math.max(2,Math.min(60,Math.min((W-40)/si.W,(H-40)/si.H))); view={s,ox:(W-si.W*s)/2-sh.x*s,oy:(H-si.H*s)/2-sh.y*s}; draw(); return; }
   if(!b){view={s:14,ox:W/2-280,oy:H/2-200};draw();return;}
   const bw=b.x2-b.x1+4,bh=b.y2-b.y1+10,s=Math.max(2,Math.min(60,Math.min((W-60)/bw,(H-60)/bh)));
   view={s,ox:(W-(b.x2-b.x1)*s)/2-b.x1*s,oy:30-(b.y1)*s+ (H-60-(b.y2-b.y1+8)*s)/2};
@@ -872,11 +1028,16 @@ $("lang").onclick=()=>{
   buildTools(); floorsBar(); renderProps(); $("hint").textContent=t("h_"+tool); draw();
 };
 
+function sheetInfo(d){ const sh=d.sheet,[pw,ph]=paperDims({paper:sh.paper,land:sh.land}),mg=Math.min(pw,ph)<10?.3:.5,tbIn=Math.max(.85,Math.min(1.25,ph*.07)); return {pw,ph,ppf:sh.ppf,mg,tbIn,W:pw/sh.ppf,H:ph/sh.ppf}; }
+function ensureSheet(d,force){
+  d.sheet=Object.assign({paper:"archc",land:true,ppf:d.unit==="met"?.12:.25},d.sheet||{}); const sh=d.sheet;
+  if(force||sh.x==null||sh.y==null){ const cb=contentBounds(d.floors[0]),si=sheetInfo(d),cx=cb?(cb.x1+cb.x2)/2:20,cy=cb?(cb.y1+cb.y2)/2:15,ah=si.ph-2*si.mg-si.tbIn; sh.x=cx-si.W/2; sh.y=cy-(si.mg+ah/2)/si.ppf; }
+}
 function normalize(d){
   d.unit=d.unit||"imp"; d.cur=Math.min(d.cur||0,d.floors.length-1); d.meta=Object.assign({project:"My House",address:"",author:""},d.meta||{});
   d.floors.forEach(f=>{for(const k of["walls","openings","labels","rooms","items","dims"])f[k]=f[k]||[]; f.name=f.name||"Floor"; if(f.showTitle===undefined)f.showTitle=true; f.wallH=f.wallH||9; f.id=f.id||0;});
   let m=1; d.floors.forEach(f=>{m=Math.max(m,f.id,...f.walls.map(x=>x.id||0),...f.openings.map(x=>x.id||0),...f.labels.map(x=>x.id||0),...f.rooms.map(x=>x.id||0),...f.items.map(x=>x.id||0),...f.dims.map(x=>x.id||0));}); nid=Math.max(nid,m);
-  return d;
+  ensureSheet(d); return d;
 }
 
 /* ================= 3D view ================= */
@@ -914,10 +1075,26 @@ function refresh3D(){ if(mode==="3d"&&T3){ build3D(); } }
 
 function mat3(c,o){ return new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:.85,metalness:0},o||{})); }
 function bx(g,w,h,d,x,y,z,m){ const me=new THREE.Mesh(new THREE.BoxGeometry(Math.max(.01,w),Math.max(.01,h),Math.max(.01,d)),m); me.position.set(x,y+h/2,z); me.castShadow=true; me.receiveShadow=true; g.add(me); return me; }
+function cyl(g,rt,rb,h,x,y,z,m,seg){ const me=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,seg||24),m); me.position.set(x,y+h/2,z); me.castShadow=true; me.receiveShadow=true; g.add(me); return me; }
+function ico(g,r,x,y,z,m){ const me=new THREE.Mesh(new THREE.IcosahedronGeometry(r,1),m); me.position.set(x,y,z); me.castShadow=true; me.receiveShadow=true; g.add(me); return me; }
+function car3D(it,idx,kind){
+  const g=new THREE.Group(), L=it.d, W=it.w, sx=L/15, col=[0x9aa5b1,0x3c5a85,0x8a2b2b,0x2f3b34][idx%4];
+  const prof={sedan:[[0,1.1],[0,2.2],[2.4,2.6],[4.6,3.0],[6.4,4.5],[10.4,4.6],[12.6,3.1],[15,2.8],[15,1.1]],
+    suv:[[0,1.2],[0,2.5],[2.6,2.9],[4.8,3.3],[6.0,5.0],[13.8,5.1],[15,3.6],[15,1.2]],
+    truck:[[0,1.4],[0,2.9],[3.0,3.3],[5.0,3.6],[6.4,5.3],[9.8,5.3],[10.4,3.7],[15,3.7],[15,1.4]]}[kind];
+  const sh=new THREE.Shape(prof.map(([x,y])=>new THREE.Vector2(x*sx,y)));
+  const geo=new THREE.ExtrudeGeometry(sh,{depth:W*.94,bevelEnabled:false}); geo.translate(-L/2,0,-W*.47);
+  const body=new THREE.Mesh(geo,mat3(col,{metalness:.12,roughness:.4})); body.rotation.y=-Math.PI/2; body.castShadow=true; body.receiveShadow=true; g.add(body);
+  const band={sedan:[5.4,11.6,3.1,4.4],suv:[5.4,14.4,3.4,4.9],truck:[5.6,9.8,3.7,5.2]}[kind];
+  bx(g,W*.94+.08,band[3]-band[2]-.35,(band[1]-band[0])*sx,0,band[2],((band[0]+band[1])/2)*sx-L/2,mat3(0x1c2530,{metalness:.2,roughness:.15}));
+  for(const sgx of[-1,1])for(const zz of[-L*.3,L*.32]){ const wh=new THREE.Mesh(new THREE.CylinderGeometry(1.15,1.15,.75,20),mat3(0x151515)); wh.rotation.z=Math.PI/2; wh.position.set(sgx*(W/2-.05),1.15,zz); wh.castShadow=true; g.add(wh); }
+  for(const sgx of[-1,1]){ bx(g,.9,.35,.12,sgx*W*.3,1.9,-L/2+.03,mat3(0xfff3b0,{emissive:0x666030})); bx(g,.9,.35,.12,sgx*W*.3,2.0,L/2-.03,mat3(0xc0302a,{emissive:0x401010})); }
+  return g;
+}
 function item3D(it,rise,idx){
   const g=new THREE.Group(), w=it.w, d=it.d, M=mat3, wood=0x9b7653, white=0xf2f2f0, steel=0xc9ced4;
   switch(it.k){
-    case "sofa": case "chair": bx(g,w,1.4,d,0,0,0,M(0x6e8299)); bx(g,w,2.9,d*.28,0,0,-d/2+d*.14,M(0x5d7188)); bx(g,.7,2.3,d,-w/2+.35,0,0,M(0x5d7188)); bx(g,.7,2.3,d,w/2-.35,0,0,M(0x5d7188)); break;
+    case "sofa": case "chair": case "loveseat": bx(g,w,1.4,d,0,0,0,M(0x6e8299)); bx(g,w,2.9,d*.28,0,0,-d/2+d*.14,M(0x5d7188)); bx(g,.7,2.3,d,-w/2+.35,0,0,M(0x5d7188)); bx(g,.7,2.3,d,w/2-.35,0,0,M(0x5d7188)); break;
     case "table": { const tw=w-1.2, td=d-2.2; bx(g,tw,.15,td,0,2.45,0,M(wood)); for(const sx of[-1,1])for(const sz of[-1,1]) bx(g,.2,2.45,.2,sx*(tw/2-.3),0,sz*(td/2-.3),M(wood));
       const n=Math.max(1,Math.floor(w/2)); for(let k=0;k<n;k++){ const cx=-w/2+.6+(w-1.2)*(k+.5)/n; for(const sz of[-1,1]){ bx(g,1.4,.15,1,cx,1.5,sz*(d/2-.5),M(0x7a5c3f)); bx(g,1.4,1.3,.15,cx,1.65,sz*(d/2-.05*sz),M(0x7a5c3f)); } } break; }
     case "coffee": bx(g,w,.15,d,0,1.35,0,M(wood)); for(const sx of[-1,1])for(const sz of[-1,1]) bx(g,.15,1.35,.15,sx*(w/2-.2),0,sz*(d/2-.2),M(0x6d5238)); break;
@@ -938,9 +1115,42 @@ function item3D(it,rise,idx){
     case "tub": bx(g,w,1.8,d,0,0,0,M(white)); bx(g,w-.5,.05,d-.5,0,1.8,0,M(0xcfd8de)); break;
     case "shower": bx(g,w,.25,d,0,0,0,M(0xe6e9ec)); for(const [px,pz,ww,dd] of [[w/2-.03,0,.06,d],[0,d/2-.03,w,.06]]) bx(g,ww,6.4,dd,px,.25,pz,M(0xbfe0ef,{transparent:true,opacity:.28,roughness:.1})); break;
     case "stairs": { const n=Math.max(3,Math.round(d/.95)), run=d/n; for(let k=0;k<n;k++){ const hh=rise*(k+1)/n; bx(g,w,hh,run,0,0,d/2-(k+.5)*run,M(0xcdbba3)); } break; }
-    case "car": { const col=[0x9aa5b1,0x3c5a85,0x8a2b2b][idx%3]; bx(g,w,1.9,d,0,.6,0,M(col,{metalness:.5,roughness:.35})); bx(g,w*.82,1.3,d*.42,0,2.5,d*.06,M(0x232a33,{metalness:.2,roughness:.2})); for(const sx of[-1,1])for(const sz of[-1,1]) bx(g,.5,1.3,1.6,sx*(w/2-.1),0,sz*(d*.3),M(0x151515)); break; }
+    case "car": return car3D(it,idx,"sedan");
+    case "suv": return car3D(it,idx,"suv");
+    case "truck": return car3D(it,idx,"truck");
     case "washer": bx(g,w,3,d,0,0,0,M(white)); break;
     case "column": bx(g,w,rise,d,0,0,0,M(0xb4b1ab)); break;
+    case "stairsL": { const sw=3.5,n1=Math.max(3,Math.round((d-sw)/.92)),n2=Math.max(3,Math.round((w-sw)/.92)),rs=rise/(n1+n2+1),r1=(d-sw)/n1,r2=(w-sw)/n2,m=M(0xcdbba3);
+      for(let k=0;k<n1;k++) bx(g,sw,rs*(k+1),r1,-w/2+sw/2,0,d/2-(k+.5)*r1,m);
+      bx(g,sw,rs*(n1+1),sw,-w/2+sw/2,0,-d/2+sw/2,m);
+      for(let k=0;k<n2;k++) bx(g,r2,rs*(n1+2+k),sw,-w/2+sw+(k+.5)*r2,0,-d/2+sw/2,m); break; }
+    case "stairsU": { const sw=(w-.3)/2,n=Math.max(3,Math.round((d-sw)/.92)),rs=rise/(2*n+1),r1=(d-sw)/n,m=M(0xcdbba3);
+      for(let k=0;k<n;k++) bx(g,sw,rs*(k+1),r1,-w/2+sw/2,0,d/2-(k+.5)*r1,m);
+      bx(g,w,rs*(n+1),sw,0,0,-d/2+sw/2,m);
+      for(let k=0;k<n;k++) bx(g,sw,rs*(n+2+k),r1,w/2-sw/2,0,-d/2+sw+(k+.5)*r1,m); break; }
+    case "spiral": { const r=Math.min(w,d)/2,n=14,rs=rise/n; cyl(g,.3,.3,rise,0,0,0,M(0x888888));
+      for(let k=0;k<n;k++){ const a=k*2*Math.PI/n+.1, st=bx(g,r,.22,1.5,0,0,0,M(0xcdbba3)); st.position.set(Math.cos(a)*r/2,(k+1)*rs-.11,Math.sin(a)*r/2); st.rotation.y=-a; } break; }
+    case "pool": { const cp=.9, cm=M(0xe9e4d8); bx(g,w,.4,cp,0,0,-d/2+cp/2,cm); bx(g,w,.4,cp,0,0,d/2-cp/2,cm); bx(g,cp,.4,d-2*cp,-w/2+cp/2,0,0,cm); bx(g,cp,.4,d-2*cp,w/2-cp/2,0,0,cm);
+      bx(g,w-2*cp,.06,d-2*cp,0,.04,0,M(0x4db3e6,{transparent:true,opacity:.88,roughness:.12,metalness:.1})); break; }
+    case "poolk": { const pts=kidneyPts(w,d,72), sc=(w-1.9)/w, sc2=(d-1.9)/d;
+      const outer=new THREE.Shape(pts.map(([x,y])=>new THREE.Vector2(x,-y))), hole=new THREE.Path(pts.map(([x,y])=>new THREE.Vector2(x*sc,-y*sc2))); outer.holes.push(hole);
+      const cope=new THREE.Mesh(new THREE.ExtrudeGeometry(outer,{depth:.4,bevelEnabled:false}),M(0xe9e4d8)); cope.rotation.x=-Math.PI/2; cope.castShadow=true; cope.receiveShadow=true; g.add(cope);
+      const wat=new THREE.Mesh(new THREE.ExtrudeGeometry(new THREE.Shape(pts.map(([x,y])=>new THREE.Vector2(x*sc,-y*sc2))),{depth:.1,bevelEnabled:false}),M(0x4db3e6,{transparent:true,opacity:.88,roughness:.12})); wat.rotation.x=-Math.PI/2; wat.position.y=.04; g.add(wat); break; }
+    case "poolr": cyl(g,w/2,w/2,.4,0,0,0,M(0xe9e4d8),40); cyl(g,w/2-.9,w/2-.9,.44,0,0,0,M(0x4db3e6,{transparent:true,opacity:.9,roughness:.12}),40); break;
+    case "hottub": cyl(g,w/2,w/2,2.3,0,0,0,M(0xb78f68),32); cyl(g,w/2-.5,w/2-.5,.06,0,2.3,0,M(0x4db3e6,{transparent:true,opacity:.9,roughness:.12}),32); break;
+    case "tree": cyl(g,.35,.5,5,0,0,0,M(0x6b4f33),12); ico(g,w*.46,0,5+w*.3,0,M(0x6f9a52,{flatShading:true})); break;
+    case "bush": ico(g,w*.4,0,w*.32,0,M(0x7da05d,{flatShading:true})); break;
+    case "bbq": bx(g,w,2.6,d,0,0,0,M(0x2c2f33)); bx(g,w,.5,d,0,2.6,0,M(0x6b6e72)); break;
+    case "lounger": bx(g,w,.9,d*.65,0,0,d*.17,M(0xf4f1ea)); bx(g,w,1.2,.5,0,.6,-d/2+.5,M(0xf4f1ea)); break;
+    case "patio": cyl(g,1.7,1.7,.12,0,2.45,0,M(0x9b7653)); cyl(g,.15,.15,2.45,0,0,0,M(0x555555),10); for(const [x,z] of [[0,-2.5],[0,2.5],[-2.5,0],[2.5,0]]){ bx(g,1.2,.15,1.2,x,1.5,z,M(0x7a5c3f)); bx(g,.2,1.5,.2,x,0,z,M(0x555555)); } break;
+    case "bookcase": bx(g,w,6.5,d,0,0,0,M(0x8a6a48)); break;
+    case "piano": bx(g,w,3.3,d,0,0,0,M(0x1d1d20)); bx(g,w-.4,.1,.7,0,3.3,d/2-.6,M(0xf2f2f2)); break;
+    case "round": cyl(g,1.6,1.6,.12,0,2.4,0,M(0x9b7653)); cyl(g,.2,.2,2.4,0,0,0,M(0x555555),10); for(const [x,z] of [[0,-2.05],[0,2.05],[-2.05,0],[2.05,0]]) bx(g,1,1.5,1,x,0,z,M(0x7a5c3f)); break;
+    case "dchair": bx(g,w,1.5,d,0,0,0,M(0x7a5c3f)); bx(g,w,1.6,.2,0,1.5,-d/2+.1,M(0x7a5c3f)); break;
+    case "crib": bx(g,w,2.8,d,0,0,0,M(0xece3d2)); break;
+    case "plant": cyl(g,.55,.4,1.1,0,0,0,M(0x8a5a3a),12); ico(g,.85,0,2,0,M(0x6f9a52,{flatShading:true})); break;
+    case "rug": bx(g,w,.05,d,0,.04,0,M(0xe7dcc8)); break;
+    case "ksink": bx(g,w,2.9,d,0,0,0,M(0xe4dfd6)); bx(g,w,.12,d,0,2.9,0,M(0x4a4a4a)); bx(g,w*.7,.05,d*.5,0,3.02,0,M(0x222a30)); break;
     default: bx(g,w,2,d,0,0,0,M(0xb0b0b0));
   }
   return g;
@@ -952,7 +1162,7 @@ function wall3D(w,f,H,mWall,mGlass){
   let cur=-th/2;
   for(const op of ops){
     seg(cur,op.a,0,H);
-    if(op.type==="door") seg(op.a,op.b,Math.min(6.8,H),H);
+    if(op.type!=="window"){ seg(op.a,op.b,Math.min(op.type==="garage"?7.2:6.8,H),H); if(op.type==="slide"&&H>3.2) bx(g,op.b-op.a,Math.min(6.8,H),.06,(op.a+op.b)/2,0,0,mGlass); }
     else { seg(op.a,op.b,0,Math.min(3,H)); seg(op.a,op.b,Math.min(7,H),H); if(H>3.2) bx(g,op.b-op.a,Math.min(7,H)-3,.08,(op.a+op.b)/2,3,0,mGlass); }
     cur=Math.max(cur,op.b);
   }
@@ -1053,6 +1263,7 @@ function drawTitleBlock(g,fx,fy,fw,fh,tbH,f,scale,fi,dpi,ink,sub){
   g.textBaseline="alphabetic"; g.textAlign="left";
   g.font=`700 ${I(.24)}px sans-serif`; g.fillText((m.project||"").toUpperCase().slice(0,40),fx+I(.15),y+I(.42));
   g.font=`${I(.12)}px sans-serif`; if(m.address) g.fillText(m.address.slice(0,60),fx+I(.15),y+I(.64));
+  { const ar=totalArea(f); if(ar>0){ g.font=`${I(.11)}px sans-serif`; g.fillText(t("areaWord")+": "+fmtArea(ar),fx+I(.15),y+tbH-I(.14)); } }
   const sm=I(.075); g.font=`700 ${sm}px sans-serif`; g.fillText(t("pr_sheet"),fx+fw*.5+I(.12),y+I(.16)); g.fillText(t("pr_scale_l"),fx+fw*.5+I(.12),y+tbH*.62);
   g.font=`700 ${I(.2)}px sans-serif`; g.fillText((f.name+" "+sub).toUpperCase().slice(0,34),fx+fw*.5+I(.12),y+I(.42));
   g.font=`${I(.13)}px sans-serif`; g.fillText(scale,fx+fw*.5+I(.12),y+tbH*.62+I(.2));
@@ -1074,9 +1285,9 @@ function renderSheet(view,fi,o,dpi){
       if(cb){
         const m=o.overall?6:3, bw=cb.x2-cb.x1, bh=cb.y2-cb.y1; let s;
         if(o.scale==="fit"){ s=Math.min(aw/(bw+2*m),ah/(bh+2*m)); label=t("pr_asnoted"); } else { s=parseFloat(o.scale)*dpi; fits=(bw+2*m)*s<=aw&&(bh+2*m)*s<=ah; label=scaleLabel(o.scale); }
-        ppfPx=s; const v={s,ox:ax+(aw-bw*s)/2-cb.x1*s,oy:ay+(ah-bh*s)/2-cb.y1*s}, P=o.bp?BPP:LIGHT;
+        ppfPx=s; const v={s,ox:ax+(aw-bw*s)/2-cb.x1*s,oy:ay+(ah-bh*s)/2-cb.y1*s}, P=o.bp?BPP:Object.assign({},LIGHT,{paper:"#ffffff"});
         g.save(); g.beginPath(); g.rect(ax,ay,aw,ah); g.clip();
-        render(g,W,H,v,P,false,{noBg:true,noTitle:true,lw:k,nameFont:I(.1),dimFont:I(.085),wallDims:o.walldims});
+        render(g,W,H,v,P,false,{noBg:true,noTitle:true,lw:k,nameFont:I(.1),dimFont:I(.085),dimMode:o.walldims?2:0});
         const wb=wallsBox(f);
         if(o.overall&&wb){ const ro={dimFont:I(.095)}; drawDim(g,{x1:wb.x1,y1:wb.y1,x2:wb.x2,y2:wb.y1,off:-4},v,P,P.ink,k,ro); drawDim(g,{x1:wb.x1,y1:wb.y1,x2:wb.x1,y2:wb.y2,off:4},v,P,P.ink,k,ro); }
         g.restore();
@@ -1101,7 +1312,7 @@ function updatePreview(){
     $("pnote").textContent=o.view==="2d"?(sh.fits?t("pr_fitok"):t("pr_nofit")):""; $("pnote").style.color=sh.fits?"":"#d93025";
   },80);
 }
-function openPrint(){ buildPrintSelects(); $("dlgback").style.display="flex"; updatePreview(); }
+function openPrint(){ buildPrintSelects(); $("pp").value=doc.sheet.paper; $("po").value=doc.sheet.land?"1":"0"; if([...$("ps").options].some(o=>o.value===String(doc.sheet.ppf))) $("ps").value=String(doc.sheet.ppf); $("dlgback").style.display="flex"; updatePreview(); }
 function closePrint(){ $("dlgback").style.display="none"; }
 function makeSheets(){ const o=readPrintOpts(), [pw,ph]=paperDims(o), dpi=Math.min(150,7000/Math.max(pw,ph)); return {o,pw,ph,sheets:sheetList(o).map(i=>({i,r:renderSheet(o.view,i,o,dpi)}))}; }
 document.querySelectorAll("#dlg select, #dlg input").forEach(n=>n.addEventListener("change",updatePreview));
