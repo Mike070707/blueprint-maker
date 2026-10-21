@@ -142,7 +142,8 @@
     <canvas id="c3d"></canvas>
     <canvas id="lab3"></canvas>
     <div class="ov" id="ov3">
-      <button id="walls3" data-i="v3_ext">View: Exterior</button>
+      <button id="walk3" data-i="walk3" class="on">Walk inside</button>
+      <button id="walls3" data-i="v3_cut">View: Inside</button>
       <button id="front3" data-i="front3">Front view</button>
       <button id="board3" data-i="board3">Presentation board</button>
       <button id="top3" data-i="top3">Top view</button>
@@ -217,8 +218,8 @@ const T = {
   h_room:"Drag a rectangle, or click corners for any shape (click the first corner or press Enter to close).",
   h_text:"Click to add text.",h_erase:"Click anything to delete it.",h_pan:"Drag to move the view. Scroll to zoom. Hold Space in any tool to pan.",
   h_place:"Click to place. R rotates. Esc stops.",
-  pj_back:"Projects",lk_shut:"Window shutters",lk_shutc:"Shutter color",v3_plan:"View: Rendered plan",board3:"Presentation board",pr_board:"Presentation board",p_tagline:"Tagline (board footer)",p_lot:"Lot size (board)",
-  bd_floorplan:"FLOOR PLAN",bd_site:"SITE PLAN",bd_legend:"ROOM LEGEND",bd_main:"MAIN HOUSE",bd_beds:"BEDROOMS",bd_baths:"BATHROOMS",bd_garage:"GARAGE",bd_cars:"CARS",bd_lot:"LOT SIZE",bd_sqft:"SQ. FT.",st_print:"Style: Print",st_color:"Style: Color",p_outdoor:"Set to 0 for an outdoor area (patio, yard).",front3:"Front view",v3_ext:"View: Exterior",v3_open:"View: Open top",v3_cut:"View: Cutaway",v3_floor:"View: Floors only",p_custom:"Custom size (inches, width × height)",p_fitsheet:"Fit paper to plan",p_cw:"Width (in)",p_ch:"Height (in)",
+  pj_back:"Projects",walk3:"Walk inside",v3_walk:"View: Walk inside",lk_int:"Interior wall color",h_walk:"Walk: drag to look around. W A S D or the arrow keys to move. Hold Shift to run. Scroll to step forward. Pick a floor tab to walk on that floor.",lk_shut:"Window shutters",lk_shutc:"Shutter color",v3_plan:"View: Rendered plan",board3:"Presentation board",pr_board:"Presentation board",p_tagline:"Tagline (board footer)",p_lot:"Lot size (board)",
+  bd_floorplan:"FLOOR PLAN",bd_site:"SITE PLAN",bd_legend:"ROOM LEGEND",bd_main:"MAIN HOUSE",bd_beds:"BEDROOMS",bd_baths:"BATHROOMS",bd_garage:"GARAGE",bd_cars:"CARS",bd_lot:"LOT SIZE",bd_sqft:"SQ. FT.",st_print:"Style: Print",st_color:"Style: Color",p_outdoor:"Set to 0 for an outdoor area (patio, yard).",front3:"Front view",v3_ext:"View: Exterior",v3_open:"View: Open top",v3_cut:"View: Inside",v3_floor:"View: Floors only",p_custom:"Custom size (inches, width × height)",p_fitsheet:"Fit paper to plan",p_cw:"Width (in)",p_ch:"Height (in)",
   lk_title:"House look",lk_modern:"Modern",lk_farm:"Farmhouse",lk_brick:"Brick",lk_med:"Mediterranean",lk_cabin:"Cabin",lk_stone:"Stone",lk_wall:"Wall material",lk_wcolor:"Wall color",lk_trim:"Trim color",lk_roof:"Roof shape",lk_rmat:"Roof material",lk_rcolor:"Roof color",lk_pitch:"Roof pitch",lk_over:"Roof overhang",lk_door:"Front door color",lk_garage:"Garage door color",lk_frame:"Window frame color",lk_lawn:"Lawn and driveway",
   wm_stucco:"Stucco",wm_brick:"Brick",wm_siding:"Siding",wm_stone:"Stone",wm_wood:"Wood",rf_gable:"Gable",rf_hip:"Hip",rf_flat:"Flat",rf_none:"No roof",rm_shingle:"Shingles",rm_tile:"Clay tile",rm_metal:"Metal",paperv:"Paper",dims_off:"Sizes: off",dims_walls:"Sizes: walls",dims_chain:"Sizes: full",p_dstyle:"Door style",ds_door:"Single door",ds_double:"Double door",ds_slide:"Sliding door",ds_garage:"Garage door",ds_open:"Open archway",
   ty_door:"Door",ty_double:"Double door",ty_slide:"Sliding door",ty_garage:"Garage door",ty_open:"Archway",ty_window:"Window",g_stairs:"Stairs",g_outdoor:"Pool & outdoor",
@@ -250,8 +251,8 @@ const T = {
   h_room:"גרור מלבן, או לחץ על פינות לצורה חופשית (לחץ על הפינה הראשונה או Enter לסגירה).",
   h_text:"לחץ להוספת טקסט.",h_erase:"לחץ על כל דבר כדי למחוק.",h_pan:"גרור להזזת התצוגה. גלול לזום. Space מפעיל הזזה בכל כלי.",
   h_place:"לחץ למיקום. R מסובב. Esc מפסיק.",
-  pj_back:"פרויקטים",lk_shut:"תריסי חלונות",lk_shutc:"צבע תריסים",v3_plan:"תצוגה: תוכנית מעובדת",board3:"לוח הצגה",pr_board:"לוח הצגה",p_tagline:"כותרת תחתונה (לוח)",p_lot:"גודל מגרש (לוח)",
-  bd_floorplan:"תוכנית קומה",bd_site:"תוכנית מגרש",bd_legend:"רשימת חדרים",bd_main:"בית ראשי",bd_beds:"חדרי שינה",bd_baths:"חדרי רחצה",bd_garage:"חניה",bd_cars:"רכבים",bd_lot:"גודל מגרש",bd_sqft:"רגל רבוע",st_print:"סגנון: הדפס",st_color:"סגנון: צבע",p_outdoor:"הגדר 0 לשטח חיצוני (פטיו, חצר).",front3:"מבט קדמי",v3_ext:"תצוגה: חוץ",v3_open:"תצוגה: גג פתוח",v3_cut:"תצוגה: חתך",v3_floor:"תצוגה: רצפות בלבד",p_custom:"גודל מותאם (אינצ'ים, רוחב × גובה)",p_fitsheet:"התאם נייר לתוכנית",p_cw:"רוחב (אינץ')",p_ch:"גובה (אינץ')",
+  pj_back:"פרויקטים",walk3:"הליכה בפנים",v3_walk:"תצוגה: הליכה בפנים",lk_int:"צבע קירות פנים",h_walk:"הליכה: גרור להסתכלות. W A S D או חצים לתנועה. Shift לריצה. גלול כדי להתקדם. בחר לשונית קומה כדי ללכת בה.",lk_shut:"תריסי חלונות",lk_shutc:"צבע תריסים",v3_plan:"תצוגה: תוכנית מעובדת",board3:"לוח הצגה",pr_board:"לוח הצגה",p_tagline:"כותרת תחתונה (לוח)",p_lot:"גודל מגרש (לוח)",
+  bd_floorplan:"תוכנית קומה",bd_site:"תוכנית מגרש",bd_legend:"רשימת חדרים",bd_main:"בית ראשי",bd_beds:"חדרי שינה",bd_baths:"חדרי רחצה",bd_garage:"חניה",bd_cars:"רכבים",bd_lot:"גודל מגרש",bd_sqft:"רגל רבוע",st_print:"סגנון: הדפס",st_color:"סגנון: צבע",p_outdoor:"הגדר 0 לשטח חיצוני (פטיו, חצר).",front3:"מבט קדמי",v3_ext:"תצוגה: חוץ",v3_open:"תצוגה: גג פתוח",v3_cut:"תצוגה: בפנים",v3_floor:"תצוגה: רצפות בלבד",p_custom:"גודל מותאם (אינצ'ים, רוחב × גובה)",p_fitsheet:"התאם נייר לתוכנית",p_cw:"רוחב (אינץ')",p_ch:"גובה (אינץ')",
   lk_title:"מראה הבית",lk_modern:"מודרני",lk_farm:"בית חווה",lk_brick:"לבנים",lk_med:"ים תיכוני",lk_cabin:"בקתה",lk_stone:"אבן",lk_wall:"חומר קירות",lk_wcolor:"צבע קירות",lk_trim:"צבע קישוטים",lk_roof:"צורת גג",lk_rmat:"חומר גג",lk_rcolor:"צבע גג",lk_pitch:"שיפוע גג",lk_over:"בליטת גג",lk_door:"צבע דלת כניסה",lk_garage:"צבע דלת חניה",lk_frame:"צבע מסגרת חלונות",lk_lawn:"דשא ושביל גישה",
   wm_stucco:"טיח",wm_brick:"לבנים",wm_siding:"חיפוי",wm_stone:"אבן",wm_wood:"עץ",rf_gable:"גמלון",rf_hip:"ארבע מקצועות",rf_flat:"שטוח",rf_none:"ללא גג",rm_shingle:"רעפי אספלט",rm_tile:"רעפי חרס",rm_metal:"מתכת",paperv:"נייר",dims_off:"מידות: כבוי",dims_walls:"מידות: קירות",dims_chain:"מידות: מלא",p_dstyle:"סוג דלת",ds_door:"דלת רגילה",ds_double:"דלת כפולה",ds_slide:"דלת הזזה",ds_garage:"דלת חניה",ds_open:"פתח פתוח",
   ty_door:"דלת",ty_double:"דלת כפולה",ty_slide:"דלת הזזה",ty_garage:"דלת חניה",ty_open:"קשת",ty_window:"חלון",g_stairs:"מדרגות",g_outdoor:"בריכה ופנים חוץ",
@@ -1011,7 +1012,7 @@ const lenIn=(f,v)=>`<input data-f="${f}" data-len="1" value="${esc(fmt(v))}">`;
 function lookPanel(){
   const L=lk(), f=F(), sl=(k,opts,fmt2)=>`<select data-look="${k}">${opts.map(o=>`<option value="${o}" ${String(L[k])===String(o)?"selected":""}>${fmt2?fmt2(o):o}</option>`).join("")}</select>`, col=(k,lab)=>row(lab,`<input type="color" data-look="${k}" value="${L[k]}">`);
   return `<h3>${t("lk_title")}</h3><div class="btns" style="margin-bottom:12px">${Object.keys(PRESETS).map(k=>`<button data-preset="${k}">${t("lk_"+k)}</button>`).join("")}</div>`
-   +row(t("lk_wall"),sl("wall",["stucco","brick","siding","stone","wood"],o=>t("wm_"+o)))+col("wallColor",t("lk_wcolor"))+col("trim",t("lk_trim"))
+   +row(t("lk_wall"),sl("wall",["stucco","brick","siding","stone","wood"],o=>t("wm_"+o)))+col("wallColor",t("lk_wcolor"))+col("trim",t("lk_trim"))+col("interior",t("lk_int"))
    +row(t("lk_roof"),sl("roof",["gable","hip","flat","none"],o=>t("rf_"+o)))+row(t("lk_rmat"),sl("roofMat",["shingle","tile","metal"],o=>t("rm_"+o)))+col("roofColor",t("lk_rcolor"))
    +row(t("lk_pitch"),sl("pitch",[3,4,6,8,10,12],o=>o+"/12"))+row(t("lk_over"),sl("overhang",[0,1,2,3],o=>o+" ft"))
    +col("door",t("lk_door"))+col("garage",t("lk_garage"))+col("frame",t("lk_frame"))
@@ -1226,7 +1227,7 @@ function cyl(g,rt,rb2,h,x,y,z,m,seg){ const me=new THREE.Mesh(new THREE.Cylinder
 function ico(g,r,x,y,z,m,sc){ const me=new THREE.Mesh(new THREE.IcosahedronGeometry(r,1),m); me.position.set(x,y,z); if(sc)me.scale.set(sc[0],sc[1],sc[2]); me.castShadow=true; me.receiveShadow=true; g.add(me); return me; }
 
 /* ---------- house look ---------- */
-const LOOK_DEF={wall:"stucco",wallColor:"#f1ede4",trim:"#ffffff",roof:"gable",roofMat:"shingle",roofColor:"#51565e",pitch:6,overhang:2,door:"#3b5a7a",garage:"#e8e6e0",frame:"#2a2d33",lawn:true,shutters:false,shutter:"#2f4a3a"};
+const LOOK_DEF={wall:"stucco",wallColor:"#f1ede4",trim:"#ffffff",roof:"gable",roofMat:"shingle",roofColor:"#51565e",pitch:6,overhang:2,door:"#3b5a7a",garage:"#e8e6e0",frame:"#2a2d33",lawn:true,shutters:false,shutter:"#2f4a3a",interior:"#e6dfd0"};
 const PRESETS={
   modern:{shutters:false,wall:"stucco",wallColor:"#f3f1ec",trim:"#ffffff",roof:"flat",roofMat:"metal",roofColor:"#454a51",pitch:3,overhang:2,door:"#1f2c38",garage:"#2f3338",frame:"#15171a"},
   farm:{shutters:true,shutter:"#1d1f22",wall:"siding",wallColor:"#f4f1ea",trim:"#ffffff",roof:"gable",roofMat:"metal",roofColor:"#3f464d",pitch:9,overhang:2,door:"#2f5d50",garage:"#f4f1ea",frame:"#1d1f22"},
@@ -1262,11 +1263,11 @@ function init3D(){
     try{ const envS=new THREE.Scene(); envS.add(new THREE.Mesh(new THREE.SphereGeometry(50,32,16),makeSkyMat(sunDir))); const pm=new THREE.PMREMGenerator(r); scene.environment=pm.fromScene(envS,.03).texture; pm.dispose(); }catch(e){}
     const cm=new THREE.SpriteMaterial({map:cloudTex(),transparent:true,opacity:.9,depthWrite:false,fog:false});
     for(let i=0;i<9;i++){ const sp=new THREE.Sprite(cm), a=Math.random()*Math.PI*2, rr=1800+Math.random()*1800; sp.position.set(Math.cos(a)*rr,500+Math.random()*500,Math.sin(a)*rr); sp.scale.set(900+Math.random()*700,350+Math.random()*250,1); scene.add(sp); }
-    scene.add(new THREE.HemisphereLight(0xcfe2ff,0x6b7a55,.22));
+    const hemi=new THREE.HemisphereLight(0xcfe2ff,0x6b7a55,.22); scene.add(hemi);
     const sun=new THREE.DirectionalLight(0xfff0d8,3.1); sun.castShadow=true; sun.shadow.mapSize.set(4096,4096); sun.shadow.bias=-.00025; sun.shadow.normalBias=.05; scene.add(sun); scene.add(sun.target);
     const fill=new THREE.DirectionalLight(0xbcd2ff,.45); fill.position.set(-60,40,-50); scene.add(fill);
     const cam=new THREE.PerspectiveCamera(30,1,1,9000);
-    T3={r,scene,cam,sun,fill,dome,group:null,theta:Math.PI/2-.7,phi:1.1,dist:90,tx:0,ty:0,tz:0,dirty:true,info:{cx:0,cz:0,size:60},sunDir,composer:null,gtao:null,quality:1};
+    T3={r,scene,cam,sun,fill,hemi,dome,group:null,theta:Math.PI/2-.7,phi:1.1,dist:90,tx:0,ty:0,tz:0,dirty:true,info:{cx:0,cz:0,size:60},sunDir,composer:null,gtao:null,quality:1};
     T3.sky=null; T3.ortho=new THREE.OrthographicCamera(-50,50,50,-50,1,3000); T3.os=40; T3.forceFlat=false;
     try{ const X=THREEX, w=stageEl.clientWidth||800, h=stageEl.clientHeight||600, rt=new THREE.WebGLRenderTarget(w,h,{type:THREE.HalfFloatType,samples:4});
       const comp=new X.EffectComposer(r,rt); comp.addPass(new X.RenderPass(scene,cam));
@@ -1279,14 +1280,15 @@ function init3D(){
     cn.addEventListener("pointerdown",e=>{cn.setPointerCapture(e.pointerId);last={x:e.clientX,y:e.clientY,pan:e.button===2||e.shiftKey||e.button===1};cn.style.cursor="grabbing";});
     cn.addEventListener("pointermove",e=>{
       if(!last)return; const dx=e.clientX-last.x,dy=e.clientY-last.y; last.x=e.clientX;last.y=e.clientY;
-      if(view3===4){ const k=(2*T3.os)/Math.max(1,stageEl.clientHeight); T3.tx-=dx*k; T3.tz-=dy*k; }
+      if(view3===5&&T3.walk){ T3.walk.yaw+=dx*.0042; T3.walk.pitch=Math.max(-1.2,Math.min(1.2,T3.walk.pitch-dy*.0035)); }
+      else if(view3===4){ const k=(2*T3.os)/Math.max(1,stageEl.clientHeight); T3.tx-=dx*k; T3.tz-=dy*k; }
       else if(last.pan){ const k=T3.dist*.0016, sn=Math.sin(T3.theta), cs=Math.cos(T3.theta); T3.tx+=-(sn*dx)*k+cs*dy*k; T3.tz+=(cs*dx)*k+sn*dy*k; }
       else{ T3.theta-=dx*.008; T3.phi=Math.max(.02,Math.min(1.55,T3.phi-dy*.008)); }
       T3.dirty=true;
     });
     const up=()=>{last=null;cn.style.cursor="grab";}; cn.addEventListener("pointerup",up); cn.addEventListener("pointercancel",up);
     cn.addEventListener("contextmenu",e=>e.preventDefault());
-    cn.addEventListener("wheel",e=>{e.preventDefault(); if(view3===4){ T3.os=Math.max(4,Math.min(2500,T3.os*Math.exp(e.deltaY*.0012))); setOrtho(); } else T3.dist=Math.max(6,Math.min(2500,T3.dist*Math.exp(e.deltaY*.0012))); T3.dirty=true;},{passive:false});
+    cn.addEventListener("wheel",e=>{e.preventDefault(); if(view3===5&&T3.walk){ const d=-e.deltaY*.02; walkMove(Math.cos(T3.walk.yaw)*d,Math.sin(T3.walk.yaw)*d); } else if(view3===4){ T3.os=Math.max(4,Math.min(2500,T3.os*Math.exp(e.deltaY*.0012))); setOrtho(); } else T3.dist=Math.max(6,Math.min(2500,T3.dist*Math.exp(e.deltaY*.0012))); T3.dirty=true;},{passive:false});
     return true;
   }catch(err){ T3=null; return false; }
 }
@@ -1296,14 +1298,17 @@ function renderFrame(){
   else { T.r.toneMapping=flat?THREE.NoToneMapping:THREE.ACESFilmicToneMapping; if(T.gtao) T.gtao.enabled=!flat&&T.quality>0; T.composer.render(); }
 }
 function size3(){ if(!T3)return; const w=stageEl.clientWidth,h=stageEl.clientHeight; if(!w||!h)return; T3.r.setSize(w,h,false); T3.cam.aspect=w/h; T3.cam.updateProjectionMatrix(); setOrtho(); if(T3.composer){ T3.composer.setPixelRatio(T3.r.getPixelRatio()); T3.composer.setSize(w,h); } T3.dirty=true; }
-function updateCam(){ const T=T3; if(view3===4){ setOrtho(); T.ortho.up.set(0,0,-1); T.ortho.position.set(T.tx,700,T.tz); T.ortho.lookAt(T.tx,0,T.tz); return; } T.cam.position.set(T.tx+T.dist*Math.sin(T.phi)*Math.cos(T.theta),T.ty+T.dist*Math.cos(T.phi),T.tz+T.dist*Math.sin(T.phi)*Math.sin(T.theta)); T.cam.lookAt(T.tx,T.ty,T.tz); }
-function loop3(){ if(mode!=="3d"||!T3)return; if(T3.dirty){ updateCam(); renderFrame(); overlay3(); T3.dirty=false; } requestAnimationFrame(loop3); }
+function updateCam(){ const T=T3;
+  if(view3===5&&T.walk){ const W=T.walk, y=(T.floorY&&T.floorY[doc.cur]||0)+5.6; if(T.fovCur!==72){ T.cam.fov=72; T.cam.near=.25; T.cam.far=900; T.cam.updateProjectionMatrix(); T.fovCur=72; } T.hemi.intensity=.05; T.r.toneMappingExposure=.78; T.cam.position.set(W.x,y,W.z); const cp=Math.cos(W.pitch); T.cam.lookAt(W.x+Math.cos(W.yaw)*cp,y+Math.sin(W.pitch),W.z+Math.sin(W.yaw)*cp); return; }
+  T.hemi.intensity=view3===5?.05:.22; T.r.toneMappingExposure=view3===5?.78:1.22; if(T.fovCur!==30){ T.cam.fov=30; T.cam.near=1; T.cam.far=9000; T.cam.updateProjectionMatrix(); T.fovCur=30; }
+  if(view3===4){ setOrtho(); T.ortho.up.set(0,0,-1); T.ortho.position.set(T.tx,700,T.tz); T.ortho.lookAt(T.tx,0,T.tz); return; } T.cam.position.set(T.tx+T.dist*Math.sin(T.phi)*Math.cos(T.theta),T.ty+T.dist*Math.cos(T.phi),T.tz+T.dist*Math.sin(T.phi)*Math.sin(T.theta)); T.cam.lookAt(T.tx,T.ty,T.tz); }
+function loop3(){ if(mode!=="3d"||!T3)return; if(view3===5) walkStep(); if(T3.dirty){ updateCam(); renderFrame(); overlay3(); T3.dirty=false; } requestAnimationFrame(loop3); }
 function frontTheta(){
   const f=doc.floors[0]; let best=null;
   for(const o of f.openings){ if(!["garage","double","door"].includes(o.type))continue; const w=f.walls.find(x=>x.id===o.wall); if(!w)continue; const e=wallExt(f,w); if(!e)continue; const L=wlen(w),nx=-(w.y2-w.y1)/L*e,ny=(w.x2-w.x1)/L*e, sc=o.type==="garage"?3:o.type==="double"?2:1; if(!best||sc>best.sc)best={sc,th:Math.atan2(ny,nx)}; }
   return best?best.th:Math.PI/2;
 }
-function reset3D(){ if(!T3)return; const i=T3.info; if(view3===4){ T3.tx=i.cx; T3.tz=i.cz; T3.os=Math.max(12,i.size*.66); setOrtho(); T3.dirty=true; return; } T3.tx=i.cx; T3.ty=Math.min(i.h||8,10)*.4; T3.tz=i.cz; T3.dist=Math.max(70,i.size*2.2); T3.theta=frontTheta()-.7; T3.phi=1.22; T3.dirty=true; }
+function reset3D(){ if(!T3)return; const i=T3.info; if(view3===4){ T3.tx=i.cx; T3.tz=i.cz; T3.os=Math.max(12,i.size*.66); setOrtho(); T3.dirty=true; return; } T3.tx=i.cx; T3.ty=Math.min(i.h||8,10)*.4; T3.tz=i.cz; if(view3===5){ T3.walk=computeWalkStart(); T3.walkFloor=doc.cur; T3.dirty=true; return; } const dh=(view3===1||view3===2||view3===3); T3.dist=Math.max(dh?55:70,i.size*(dh?1.5:2.2)); T3.theta=frontTheta()-.7; T3.phi=dh?.88:1.22; T3.dirty=true; }
 function front3View(){ if(!T3)return; reset3D(); T3.theta=frontTheta(); T3.phi=1.45; T3.dist=Math.max(45,T3.info.size*1.45); T3.dirty=true; }
 function refresh3D(){ if(mode==="3d"&&T3){ build3D(); } }
 
@@ -1342,6 +1347,7 @@ function wall3D(w,f,H,C){
   const es=ext||1, tm=C.trimM, fm=C.frame;
   // concrete plinth along exterior ground-floor walls (skipped under doors)
   if(ext!==0&&C.ground&&C.exv){ let c0=0; for(const {a,b,o} of ops){ if(o.type!=="window"&&o.type!=="open"){ if(a-c0>.05) bx(g,a-c0,1.15,th+.16,(c0+a)/2,0,0,C.plinth); c0=Math.max(c0,b); } } if(L-c0>.05) bx(g,L-c0,1.15,th+.16,(c0+L)/2,0,0,C.plinth); }
+  if(C.interior){ let c0=-th/2; const bs=mc(0xfbfaf6,{roughness:.5}); for(const {a,b,o} of ops){ if(o.type!=="window"){ if(a-c0>.05) bx(g,a-c0,.5,th+.1,(c0+a)/2,0,0,bs); c0=Math.max(c0,b); } } if(L+th/2-c0>.05) bx(g,L+th/2-c0,.5,th+.1,(c0+L+th/2)/2,0,0,bs); }
   let cur=-th/2;
   for(const {a,b,o} of ops){
     seg(cur,a,0,H); const ww=b-a, xc=(a+b)/2, ty=o.type;
@@ -1523,15 +1529,48 @@ function item3D(it,rise,idx){
 }
 
 /* ---------- build ---------- */
+function addCeilings(fg,f,H0){
+  const rooms=f.rooms.filter(r=>indoorRoom(r)).sort((a,b)=>polyArea(b.pts)-polyArea(a.pts)), cm=mc(0xfbfaf8,{roughness:.9,side:THREE.DoubleSide}), lamp=mc(0xfff4e0,{emissive:0xffe6c0,emissiveIntensity:2.2,roughness:.5});
+  rooms.forEach((r,i)=>{ const geo=new THREE.ShapeGeometry(flatShape(r.pts)), me=new THREE.Mesh(geo,cm); me.rotation.x=Math.PI/2; me.position.y=H0-.01; me.receiveShadow=true; fg.add(me);
+    const b=bbox(r.pts); let lx=(b.x1+b.x2)/2, lz=(b.y1+b.y2)/2; if(!inPoly(lx,lz,r.pts)){ const p=roomLabelPos(r,f); lx=p[0]; lz=p[1]; }
+    cyl(fg,.7,.7,.08,lx,H0-.1,lz,lamp,20);
+    if(i<12){ const pl=new THREE.PointLight(0xffe9cc,Math.min(150,34+polyArea(r.pts)*.45),0,2); pl.position.set(lx,H0-.9,lz); fg.add(pl); } });
+}
+function computeWalkStart(){
+  const f=doc.floors[doc.cur]; let best=null;
+  if(doc.cur===0) for(const o of f.openings){ if(o.type!=="door"&&o.type!=="double")continue; const w=f.walls.find(x=>x.id===o.wall); if(!w)continue; const e=wallExt(f,w); if(!e)continue; const L=wlen(w),ux=(w.x2-w.x1)/L,uy=(w.y2-w.y1)/L, ix=uy*e, iz=-ux*e, cx=w.x1+ux*L*o.t, cz=w.y1+uy*L*o.t; const sc=o.type==="double"?2:1; if(!best||sc>best.sc) best={sc,x:cx+ix*4,z:cz+iz*4,yaw:Math.atan2(iz,ix)}; }
+  if(best) return {x:best.x,z:best.z,yaw:best.yaw,pitch:0};
+  const rooms=f.rooms.filter(indoorRoom).sort((a,b)=>polyArea(b.pts)-polyArea(a.pts)), r=rooms[0];
+  if(r){ const p=roomLabelPos(r,f); return {x:p[0],z:p[1],yaw:0,pitch:0}; }
+  const bb=wallsBox(f)||{x1:0,x2:20,y1:0,y2:20}; return {x:(bb.x1+bb.x2)/2,z:(bb.y1+bb.y2)/2,yaw:0,pitch:0};
+}
+function buildMini(f){
+  const cn=document.createElement("canvas"); cn.width=cn.height=220; const g=cn.getContext("2d"), b=wallsBox(f)||{x1:0,y1:0,x2:30,y2:30}, bw=b.x2-b.x1+6, bh=b.y2-b.y1+6, s=Math.min(208/bw,208/bh), ox=(220-(b.x2-b.x1)*s)/2-b.x1*s, oy=(220-(b.y2-b.y1)*s)/2-b.y1*s;
+  const prev=sel; sel=null; render(g,220,220,{s,ox,oy},LIGHT,false,{noTitle:true,nameFont:0,dimMode:0}); sel=prev; g.strokeStyle="#333"; g.lineWidth=2; g.strokeRect(1,1,218,218); return {cn,ox,oy,s};
+}
+function walkBlocked(f,x,z){
+  for(const w of f.walls){ const r=segDist(x,z,w.x1,w.y1,w.x2,w.y2), lim=.95+(w.th||.5)/2; if(r.d<lim){ const L=wlen(w), al=r.t*L; let ok=false; for(const o of f.openings){ if(o.wall!==w.id||o.type==="window")continue; if(al>=o.t*L-o.w/2+.35&&al<=o.t*L+o.w/2-.35){ ok=true; break; } } if(!ok)return true; } }
+  return false;
+}
+function walkMove(dx,dz){ const W=T3.walk, f=doc.floors[doc.cur]; if(!walkBlocked(f,W.x+dx,W.z)) W.x+=dx; if(!walkBlocked(f,W.x,W.z+dz)) W.z+=dz; T3.dirty=true; }
+function walkStep(){
+  const T=T3, now=performance.now(), dt=Math.min(.05,(now-(T.lastT||now))/1000); T.lastT=now; const k=T.keys||{}, W=T.walk; if(!W)return;
+  const fw=(k.w||k.arrowup?1:0)-(k.s||k.arrowdown?1:0), st=(k.d?1:0)-(k.a?1:0), turn=(k.arrowright?1:0)-(k.arrowleft?1:0), sp=(k.shift?15:7)*dt;
+  if(turn){ W.yaw+=turn*1.7*dt; T.dirty=true; }
+  if(fw||st){ const cy=Math.cos(W.yaw), sy=Math.sin(W.yaw); walkMove((cy*fw-sy*st)*sp,(sy*fw+cy*st)*sp); }
+}
+window.addEventListener("keydown",e=>{ if(mode!=="3d"||view3!==5||!T3||e.target.matches("input,select,textarea"))return; const k=e.key.toLowerCase(); if(["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright","shift"].includes(k)){ (T3.keys=T3.keys||{})[k]=true; if(k.startsWith("arrow"))e.preventDefault(); T3.lastT=performance.now(); T3.dirty=true; } });
+window.addEventListener("keyup",e=>{ if(T3&&T3.keys)delete T3.keys[e.key.toLowerCase()]; });
+window.addEventListener("blur",()=>{ if(T3)T3.keys={}; });
 function disposeGroup(grp){ grp.traverse(o=>{ if(o.geometry)o.geometry.dispose(); }); }
 function build3D(){
   if(!T3)return; const T=T3, L=lk(), flat=view3===4||T.forceFlat;
   if(T.group){ T.scene.remove(T.group); disposeGroup(T.group); }
   const grp=new THREE.Group(); T.group=grp; T.scene.add(grp);
   const wt=wallTex(L.wall,L.wallColor), plasterT=wallTex("plaster","#f3f0e9");
-  const C={ext:mapMat(wt,{roughness:.9,bump:(L.wall==="stucco"?.5:1.7)}),plaster:mapMat(plasterT,{roughness:.95}),cap:view3===4?mc(0x24262b,{roughness:.8}):mc(0xeeeae2,{roughness:.9}),trimM:mc(hexn(L.trim),{roughness:.6}),frame:mc(hexn(L.frame),{roughness:.5}),
+  const C={ext:mapMat(wt,{roughness:.9,bump:(L.wall==="stucco"?.5:1.7)}),plaster:mapMat(plasterT,{roughness:.95,color:hexn(L.interior||"#f2eee6")}),cap:view3===4?mc(0x24262b,{roughness:.8}):mc(0xeeeae2,{roughness:.9}),trimM:mc(hexn(L.trim),{roughness:.6}),frame:mc(hexn(L.frame),{roughness:.5}),
     glass:mc(0x9cc8e6,{transparent:true,opacity:.3,roughness:.03,metalness:.2,envMapIntensity:1.7}),glassD:mc(0x1c2530,{metalness:.2,roughness:.15}),doorM:mc(hexn(L.door),{roughness:.45}),garageM:mc(hexn(L.garage),{roughness:.55})};
-  C3ext=C.ext; const exView=view3===0;
+  C3ext=C.ext; const exView=view3===0; C.interior=(view3===1||view3===2||view3===5); if(view3===5) C.plaster=mapMat(plasterT,{roughness:.95,color:hexn(L.interior||"#e6dfd0"),envMapIntensity:.35}); T.floorY=[];
   C.exv=exView; C.dark=exView; C.shutters=!!L.shutters; C.shutM=mc(hexn(L.shutter||"#2f4a3a"),{roughness:.6}); C.shutD=mc(dk(hexn(L.shutter||"#2f4a3a"),.55),{roughness:.8});
   C.plinth=mc(0x8f9193,{roughness:.95}); C.plinth2=mapMat(floorTex("concrete"),{roughness:.9}); C.darkM=mc(0x151a20,{roughness:.15,metalness:.2,envMapIntensity:1.2});
   C.garageHi=mc(new THREE.Color(hexn(L.garage)).multiplyScalar(.9).getHex(),{roughness:.55}); C.garageD=mc(dk(hexn(L.garage),.5)); C.doorHi=mc(new THREE.Color(hexn(L.door)).multiplyScalar(.8).getHex(),{roughness:.5});
@@ -1540,8 +1579,8 @@ function build3D(){
   let z0=0, minx=1e9,maxx=-1e9,miny=1e9,maxy=-1e9, topH=0; const fls=[];
   for(let fi=0; fi<=doc.cur; fi++){
     if(fi>0&&!doc.floors[fi].walls.length) break;
-    const f=doc.floors[fi], H0=f.wallH||9, H=(view3===2||view3===4)?Math.min(H0,4):H0, fg=new THREE.Group(); fg.position.y=z0; grp.add(fg);
-    const bb=wallsBox(f); fls.push({f,bb,z0,H0});
+    const f=doc.floors[fi], H0=f.wallH||9, H=(view3===2||view3===4)?Math.min(H0,4.5):H0, fg=new THREE.Group(); fg.position.y=z0; grp.add(fg);
+    T.floorY[fi]=z0; const bb=wallsBox(f); fls.push({f,bb,z0,H0});
     if(bb){ minx=Math.min(minx,bb.x1);maxx=Math.max(maxx,bb.x2);miny=Math.min(miny,bb.y1);maxy=Math.max(maxy,bb.y2);
       bx(fg,bb.x2-bb.x1+1,.5,bb.y2-bb.y1+1,(bb.x1+bb.x2)/2,-.5,(bb.y1+bb.y2)/2,mc(0xcfcac0,{roughness:.9})); }
     for(const r of f.rooms){
@@ -1552,6 +1591,7 @@ function build3D(){
     C.ground=fi===0;
     if(view3!==3) for(const w of f.walls) fg.add(wall3D(w,f,H,C));
     f.items.forEach((it,idx)=>{ const ig=item3D(it,H0+.5,idx); ig.position.set(it.x,.04,it.y); ig.rotation.y=-it.rot*Math.PI/180; fg.add(ig); });
+    if(view3===5&&fi===doc.cur) addCeilings(fg,f,H0);
     // driveway + walkways
     if(fi===0&&L.lawn) for(const o of f.openings){ if(!["garage","double","door"].includes(o.type))continue; const w=f.walls.find(x=>x.id===o.wall); if(!w)continue; const e=wallExt(f,w); if(!e)continue;
       const len=wlen(w), ux=(w.x2-w.x1)/len,uy=(w.y2-w.y1)/len,nx=-uy*e,ny=ux*e, cx=w.x1+ux*len*o.t, cy=w.y1+uy*len*o.t, gl=o.type==="garage", wl=gl?o.w+1:3.6, ll=gl?24:12;
@@ -1584,30 +1624,33 @@ function build3D(){
       for(let k=-18;k<=18;k++){ const me=plane(5,.45,21,-.47,mc(0xe8d36a,{roughness:.8}),8); me.position.x+=-fz*k*11; me.position.z+=fx*k*11; } }
   }
   T.info={cx,cz,size,h:topH};
+  if(view3===5){ if(!T.walk||T.walkFloor!==doc.cur){ T.walk=computeWalkStart(); T.walkFloor=doc.cur; } T.mini=buildMini(doc.floors[doc.cur]); }
   if(flat) T.sun.position.set(cx-size*.45,size*1.05,cz-size*.3); else T.sun.position.set(cx+T.sunDir.x*size*2.4,T.sunDir.y*size*2.4,cz+T.sunDir.z*size*2.4); T.sun.target.position.set(cx,0,cz);
   const sc=T.sun.shadow.camera; sc.left=-size*1.1;sc.right=size*1.1;sc.top=size*1.1;sc.bottom=-size*1.1;sc.near=1;sc.far=size*6; sc.updateProjectionMatrix();
   T.dirty=true;
 }
 function render3DCanvas(w,h){
-  if(!init3D())return null; const v3keep=view3; if(view3===4){ view3=0; } build3D(); const T=T3, r=T.r, opr=r.getPixelRatio();
+  if(!init3D())return null; const v3keep=view3; if(view3===4||view3===5){ view3=0; } build3D(); const T=T3, r=T.r, opr=r.getPixelRatio();
   const keep={tx:T.tx,tz:T.tz,ty:T.ty,dist:T.dist,theta:T.theta,phi:T.phi};
   r.setPixelRatio(1); r.setSize(w,h,false); if(T.composer){ T.composer.setPixelRatio(1); T.composer.setSize(w,h); } T.cam.aspect=w/h; T.cam.updateProjectionMatrix(); updateCam(); renderFrame();
   const out=document.createElement("canvas"); out.width=w; out.height=h; out.getContext("2d").drawImage(r.domElement,0,0);
   Object.assign(T,keep); r.setPixelRatio(opr); size3(); if(v3keep!==view3){ view3=v3keep; build3D(); } return out;
 }
-const V3KEYS=["v3_ext","v3_open","v3_cut","v3_floor","v3_plan"];
+const V3KEYS=["v3_ext","v3_open","v3_cut","v3_floor","v3_plan","v3_walk"], VORDER=[2,5,1,0,3,4];
+function setView3(v){ view3=v; const b=$("walls3"); b.dataset.i=V3KEYS[v]; b.textContent=t(V3KEYS[v]); $("walk3").classList.toggle("on",v!==5); if(T3){ T3.keys={}; build3D(); reset3D(); T3.dirty=true; } $("hint").textContent=t(v===5?"h_walk":"h_3d"); overlay3(); }
 function setMode(m){
   const is3=m==="3d";
   if(is3&&!init3D()){ $("hint").textContent="3D is not available on this device."; return; }
   mode=m; sel=null; hideText();
   $("c").style.display=is3?"none":"block"; $("c3d").style.display=is3?"block":"none"; $("ov3").style.display=is3?"flex":"none"; $("zoomov").style.display=is3?"none":"flex"; $("left").style.display=is3?"none":"";
   $("v2d").setAttribute("aria-pressed",!is3); $("v3d").setAttribute("aria-pressed",is3);
-  if(is3){ let top=0; doc.floors.forEach((f,i)=>{ if(f.walls.length)top=i; }); if(doc.cur<top){ doc.cur=top; floorsBar(); } build3D(); reset3D(); size3(); loop3(); $("hint").textContent=t("h_3d"); }
+  if(is3){ let top=0; doc.floors.forEach((f,i)=>{ if(f.walls.length)top=i; }); if(doc.cur<top){ doc.cur=top; floorsBar(); } setView3(2); size3(); loop3(); }
   else { $("hint").textContent=t("h_"+tool); resize(); }
   renderProps();
 }
 $("v2d").onclick=()=>setMode("2d"); $("v3d").onclick=()=>setMode("3d");
-$("walls3").onclick=e=>{ view3=(view3+1)%5; e.currentTarget.dataset.i=V3KEYS[view3]; e.currentTarget.textContent=t(V3KEYS[view3]); build3D(); reset3D(); };
+$("walls3").onclick=()=>{ const i=VORDER.indexOf(view3); setView3(VORDER[(i+1)%VORDER.length]); };
+$("walk3").onclick=()=>setView3(view3===5?2:5);
 $("front3").onclick=front3View;
 $("top3").onclick=()=>{ if(!T3)return; reset3D(); T3.phi=.02; T3.theta=Math.PI/2; T3.dist=Math.max(40,T3.info.size*1.6); T3.dirty=true; };
 $("iso3").onclick=reset3D;
@@ -1625,7 +1668,11 @@ function drawLabels3(g,cam,w,h,f,os){
   g.restore();
 }
 function overlay3(){
-  const lab=$("lab3"); if(!lab)return; if(view3!==4||mode!=="3d"){ lab.style.display="none"; return; }
+  const lab=$("lab3"); if(!lab)return;
+  if(view3===5&&mode==="3d"&&T3&&T3.walk){ const w=stageEl.clientWidth,h=stageEl.clientHeight; if(lab.width!==w||lab.height!==h){lab.width=w;lab.height=h;} lab.style.display="block"; const g=lab.getContext("2d"); g.clearRect(0,0,w,h); const m=T3.mini, W=T3.walk;
+    if(m){ const x0=14,y0=h-m.cn.height-14; g.globalAlpha=.94; g.drawImage(m.cn,x0,y0); g.globalAlpha=1; const px=x0+m.ox+W.x*m.s, py=y0+m.oy+W.z*m.s; g.fillStyle="#ff6a00"; g.strokeStyle="#ff6a00"; g.lineWidth=3; g.beginPath(); g.arc(px,py,6,0,7); g.fill(); g.beginPath(); g.moveTo(px,py); g.lineTo(px+Math.cos(W.yaw)*22,py+Math.sin(W.yaw)*22); g.stroke(); }
+    g.font="600 13px -apple-system,Segoe UI,Arial,sans-serif"; g.textAlign="center"; g.fillStyle="rgba(0,0,0,.55)"; const msg="W A S D / arrows: move   ·   drag: look   ·   Shift: run"; const tw=g.measureText(msg).width+28; g.beginPath(); g.roundRect?g.roundRect(w/2-tw/2,h-44,tw,28,14):g.rect(w/2-tw/2,h-44,tw,28); g.fill(); g.fillStyle="#fff"; g.fillText(msg,w/2,h-25); return; }
+  if(view3!==4||mode!=="3d"){ lab.style.display="none"; return; }
   const w=stageEl.clientWidth,h=stageEl.clientHeight; if(lab.width!==w||lab.height!==h){lab.width=w;lab.height=h;} lab.style.display="block"; const g=lab.getContext("2d"); g.clearRect(0,0,w,h);
   T3.ortho.updateMatrixWorld(true); drawLabels3(g,T3.ortho,w,h,F(),T3.os);
 }
